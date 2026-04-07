@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=My Product
+Comment=A key-heat application
+# The Exec line includes %u to pass the URL to the application
+Exec=/usr/local/bin/key-heat %u
+Terminal=false
+Type=Application
+Icon=key-heat
+Categories=Utility;
+StartupWMClass=key-heat
+
+ 
