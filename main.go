@@ -3,58 +3,139 @@ package main
 import (
 	"embed"
 	_ "embed"
+	"fmt"
 	"log"
-	"time"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
+	"github.com/wailsapp/wails/v3/pkg/events"
+	"github.com/wailsapp/wails/v3/pkg/services/dock"
+	"github.com/zxc7563598/key-heat/internal/monitor"
+	"github.com/zxc7563598/key-heat/internal/storage"
 )
-
-// Wails uses Go's `embed` package to embed the frontend files into the binary.
-// Any files in the frontend/dist folder will be embedded into the binary and
-// made available to the frontend.
-// See https://pkg.go.dev/embed for more information.
 
 //go:embed all:frontend/dist
 var assets embed.FS
 
-func init() {
-	// Register a custom event whose associated data type is string.
-	// This is not required, but the binding generator will pick up registered events
-	// and provide a strongly typed JS/TS API for them.
-	application.RegisterEvent[string]("time")
+//go:embed assets/icon.png
+var icon []byte
+
+type TrayApp struct {
+	dockService *dock.DockService
+	app         *application.App
+	systray     *application.SystemTray
+	window      *application.WebviewWindow
+	menu        *application.Menu
+	repo        storage.Repository
+	mon         *monitor.Monitor
+	isActive    bool
 }
 
-// main function serves as the application's entry point. It initializes the application, creates a window,
-// and starts a goroutine that emits a time-based event every second. It subsequently runs the application and
-// logs any error that might occur.
 func main() {
-
-	// Create a new Wails application by providing the necessary options.
-	// Variables 'Name' and 'Description' are for application metadata.
-	// 'Assets' configures the asset server with the 'FS' variable pointing to the frontend files.
-	// 'Bind' is a list of Go struct instances. The frontend has access to the methods of these instances.
-	// 'Mac' options tailor the application when running an macOS.
+	// 初始化数据库
+	db, err := storage.NewDB(nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+	fmt.Println("数据库初始化成功:", db.GetPath())
+	// 自动迁移表结构
+	if err := storage.Run(db.DB); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("数据库自动迁移成功")
+	// 注入 repository
+	repo := storage.NewRepository(db.DB)
+	// 构建APP
+	dockService := dock.New()
 	app := application.New(application.Options{
-		Name:        "key-heat",
+		Name:        "Key Heat",
 		Description: "A demo of using raw HTML & CSS",
 		Services: []application.Service{
-			application.NewService(&GreetService{}),
+			application.NewService(&GreetService{
+				repo: repo,
+			}),
+			application.NewService(dockService),
 		},
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),
 		},
 		Mac: application.MacOptions{
-			ApplicationShouldTerminateAfterLastWindowClosed: true,
+			ApplicationShouldTerminateAfterLastWindowClosed: false,
+		},
+		Windows: application.WindowsOptions{
+			DisableQuitOnLastWindowClosed: true,
 		},
 	})
+	// 启动应用程序
+	trayApp := &TrayApp{
+		app:         app,
+		dockService: dockService,
+		repo:        repo,
+	}
+	trayApp.setup()
+	err = app.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 
-	// Create a new window with the necessary options.
-	// 'Title' is the title of the window.
-	// 'Mac' options tailor the window when running on macOS.
-	// 'BackgroundColour' is the background colour of the window.
-	// 'URL' is the URL that will be loaded into the webview.
-	app.Window.NewWithOptions(application.WebviewWindowOptions{
-		Title: "Window 1",
+func (t *TrayApp) setup() {
+	t.isActive = true
+	t.mon = monitor.NewMonitor(t.repo, nil)
+	go t.mon.Start()
+	// 创建托盘
+	t.systray = t.app.SystemTray.New()
+	t.systray.SetIcon(icon)
+	// 创建菜单
+	t.createMenu()
+	// 打开窗口
+	t.openWindow()
+}
+
+func (t *TrayApp) createMenu() {
+	t.menu = t.app.NewMenu()
+	// 切换监听状态
+	if t.isActive {
+		statusItem := t.menu.Add("当前状态: 已监听")
+		statusItem.SetEnabled(false)
+		// Toggle active
+		t.menu.Add("停止监听").OnClick(func(ctx *application.Context) {
+			t.mon.Stop()
+			t.isActive = false
+			t.createMenu()
+		})
+	} else {
+		statusItem := t.menu.Add("当前状态: 未监听")
+		statusItem.SetEnabled(false)
+		// Toggle active
+		t.menu.Add("启动监听").OnClick(func(ctx *application.Context) {
+			t.mon = monitor.NewMonitor(t.repo, nil)
+			go t.mon.Start()
+			t.isActive = true
+			t.createMenu()
+		})
+	}
+	t.menu.AddSeparator()
+	// 显示主界面
+	t.menu.Add("显示主界面").OnClick(func(ctx *application.Context) {
+		if t.window == nil {
+			t.openWindow()
+		}
+		t.dockService.ShowAppIcon()
+		t.window.Show()
+		t.window.Focus()
+	})
+	t.menu.AddSeparator()
+	// 退出软件
+	t.menu.Add("退出").OnClick(func(ctx *application.Context) {
+		t.app.Quit()
+	})
+	t.systray.SetMenu(t.menu)
+}
+
+func (t *TrayApp) openWindow() {
+	t.window = t.app.Window.NewWithOptions(application.WebviewWindowOptions{
+		Title: "Key Heat",
 		Mac: application.MacWindow{
 			InvisibleTitleBarHeight: 50,
 			Backdrop:                application.MacBackdropTranslucent,
@@ -63,22 +144,8 @@ func main() {
 		BackgroundColour: application.NewRGB(27, 38, 54),
 		URL:              "/",
 	})
-
-	// Create a goroutine that emits an event containing the current time every second.
-	// The frontend can listen to this event and update the UI accordingly.
-	go func() {
-		for {
-			now := time.Now().Format(time.RFC1123)
-			app.Event.Emit("time", now)
-			time.Sleep(time.Second)
-		}
-	}()
-
-	// Run the application. This blocks until the application has been exited.
-	err := app.Run()
-
-	// If an error occurred while running the application, log it and exit.
-	if err != nil {
-		log.Fatal(err)
-	}
+	t.window.OnWindowEvent(events.Common.WindowClosing, func(e *application.WindowEvent) {
+		t.dockService.HideAppIcon()
+		t.window = nil
+	})
 }
