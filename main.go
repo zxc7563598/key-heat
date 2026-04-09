@@ -81,7 +81,7 @@ func main() {
 
 func (t *TrayApp) setup() {
 	t.isActive = true
-	t.mon = monitor.NewMonitor(t.repo, nil)
+	t.mon = monitor.NewMonitor(t.repo, nil, t.app)
 	go t.mon.Start()
 	// 创建托盘
 	t.systray = t.app.SystemTray.New()
@@ -99,7 +99,7 @@ func (t *TrayApp) createMenu() {
 		statusItem := t.menu.Add("当前状态: 已监听")
 		statusItem.SetEnabled(false)
 		// Toggle active
-		t.menu.Add("停止监听").OnClick(func(ctx *application.Context) {
+		t.menu.Add("🔴 停止监听").OnClick(func(ctx *application.Context) {
 			t.mon.Stop()
 			t.isActive = false
 			t.createMenu()
@@ -108,8 +108,8 @@ func (t *TrayApp) createMenu() {
 		statusItem := t.menu.Add("当前状态: 未监听")
 		statusItem.SetEnabled(false)
 		// Toggle active
-		t.menu.Add("启动监听").OnClick(func(ctx *application.Context) {
-			t.mon = monitor.NewMonitor(t.repo, nil)
+		t.menu.Add("🟢 启动监听").OnClick(func(ctx *application.Context) {
+			t.mon = monitor.NewMonitor(t.repo, nil, t.app)
 			go t.mon.Start()
 			t.isActive = true
 			t.createMenu()

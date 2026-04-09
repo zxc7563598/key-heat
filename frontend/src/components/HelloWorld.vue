@@ -6,23 +6,24 @@ import {GreetService} from "../../bindings/github.com/zxc7563598/key-heat";
 const name = ref('')
 const result = ref('Please enter your name below 👇')
 const time = ref('Listening for Time event...')
+const key = ref('')
 
 const doGreet = () => {
   let localName = name.value;
   if (!localName) {
     localName = 'anonymous';
   }
-  GreetService.Greet(localName).then((resultValue) => {
-    result.value = resultValue;
-  }).catch((err) => {
-    console.log(err);
-  });
+GreetService.Greet(localName).then((resultValue) => {
+  result.value = resultValue;
+}).catch((err) => {
+  console.log(err);
+});
 }
 
 onMounted(() => {
-  Events.On('time', (timeValue) => {
-    time.value = timeValue.data;
-  });
+  Events.On("key:pressed", (event) => {
+      key.value = event.data.key
+    });
 })
 
 defineProps({
@@ -39,6 +40,7 @@ defineProps({
     <div class="input-box">
       <input aria-label="input" class="input" v-model="name" type="text" autocomplete="off"/>
       <button aria-label="greet-btn" class="btn" @click="doGreet">Greet</button>
+      <div>按下按键：{{key}}</div>
     </div>
   </div>
 

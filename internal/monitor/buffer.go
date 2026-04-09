@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/wailsapp/wails/v3/pkg/application"
 	"github.com/zxc7563598/key-heat/internal/storage"
 )
 
@@ -32,9 +33,10 @@ type Monitor struct {
 	stopChan  chan struct{}
 	wg        sync.WaitGroup
 	once      sync.Once
+	app       *application.App
 }
 
-func NewMonitor(repo storage.Repository, cfg *Config) *Monitor {
+func NewMonitor(repo storage.Repository, cfg *Config, app *application.App) *Monitor {
 	if cfg == nil {
 		cfg = DefaultConfig()
 	}
@@ -46,7 +48,7 @@ func NewMonitor(repo storage.Repository, cfg *Config) *Monitor {
 		flushChan: make(chan struct{}, 1),
 		stopChan:  make(chan struct{}),
 	}
-	m.listener = NewKeyEventListener(m.keyChan)
+	m.listener = NewKeyEventListener(m.keyChan, app)
 	return m
 }
 

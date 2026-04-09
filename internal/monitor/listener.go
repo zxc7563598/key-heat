@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	hook "github.com/robotn/gohook"
+	"github.com/wailsapp/wails/v3/pkg/application"
 	"github.com/zxc7563598/key-heat/pkg/keymap"
 )
 
@@ -12,15 +13,16 @@ type KeyEventListener struct {
 	keyChan  chan<- string
 	stopChan chan struct{}
 	mapper   keymap.KeyMapper
-
-	once sync.Once
+	once     sync.Once
+	app      *application.App
 }
 
-func NewKeyEventListener(keyChan chan<- string) *KeyEventListener {
+func NewKeyEventListener(keyChan chan<- string, app *application.App) *KeyEventListener {
 	return &KeyEventListener{
 		keyChan:  keyChan,
 		stopChan: make(chan struct{}),
 		mapper:   keymap.GetGlobalMapper(),
+		app:      app,
 	}
 }
 
@@ -42,6 +44,10 @@ func (l *KeyEventListener) Start() error {
 			}
 			if ev.Kind == hook.KeyDown {
 				keyName := l.mapper.Normalize(ev.Rawcode)
+				l.app.Event.Emit("key:pressed", map[string]any{
+					"key":     keyName,
+					"rawcode": ev.Rawcode,
+				})
 				log.Printf("按键: %s", keyName)
 				select {
 				case l.keyChan <- keyName:
