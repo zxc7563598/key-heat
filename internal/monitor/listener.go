@@ -62,7 +62,7 @@ func (l *KeyEventListener) Start() error {
 				// Linux:   ~/.config/KeyHeat/
 				appDir := filepath.Join(configDir, "KeyHeat")
 				textPath := filepath.Join(appDir, "keyheat.text")
-				line := fmt.Sprintf("按压Keycode: %v, 按压Rawcode: %v, 按压Keychar: %v", ev.Keycode, ev.Rawcode, ev.Keychar)
+				line := fmt.Sprintf("按压Keycode: %v, 按压Rawcode: %v, 按压Keychar: %v, 对应按键: %v", ev.Keycode, ev.Rawcode, ev.Keychar, keyName)
 				appendLineToFile(textPath, line)
 
 				select {
