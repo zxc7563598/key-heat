@@ -1,7 +1,11 @@
 package monitor
 
 import (
+	"bufio"
+	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 	"sync"
 
 	hook "github.com/robotn/gohook"
@@ -45,15 +49,35 @@ func (l *KeyEventListener) Start() error {
 			if ev.Kind == hook.KeyDown {
 				keyName := l.mapper.Normalize(ev.Rawcode)
 				l.app.Event.Emit("key:pressed", map[string]any{
-					"key":     keyName,
-					"rawcode": ev.Rawcode,
+					"key":  keyName,
+					"raw":  ev.Rawcode,
+					"type": "down",
 				})
-				log.Printf("按键: %s", keyName)
+
+				// 测试写入
+				configDir, _ := os.UserConfigDir()
+				// 跨平台应用数据目录
+				// Windows: %APPDATA%/KeyHeat/
+				// macOS:   ~/Library/Application Support/KeyHeat/
+				// Linux:   ~/.config/KeyHeat/
+				appDir := filepath.Join(configDir, "KeyHeat")
+				textPath := filepath.Join(appDir, "keyheat.text")
+				line := fmt.Sprintf("按压Keycode: %v, 按压Rawcode: %v, 按压Keychar: %v", ev.Keycode, ev.Rawcode, ev.Keychar)
+				appendLineToFile(textPath, line)
+
 				select {
 				case l.keyChan <- keyName:
 				default:
 					log.Printf("通道满，丢弃: %s", keyName)
 				}
+			}
+			if ev.Kind == hook.KeyUp {
+				keyName := l.mapper.Normalize(ev.Rawcode)
+				l.app.Event.Emit("key:pressed", map[string]any{
+					"key":  keyName,
+					"raw":  ev.Rawcode,
+					"type": "up",
+				})
 			}
 		}
 	}
@@ -64,4 +88,24 @@ func (l *KeyEventListener) Stop() {
 	l.once.Do(func() {
 		close(l.stopChan)
 	})
+}
+
+func appendLineToFile(filePath string, line string) error {
+	// 确保目录存在
+	if err := os.MkdirAll(filepath.Dir(filePath), 0755); err != nil {
+		return err
+	}
+
+	file, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	writer := bufio.NewWriter(file)
+	if _, err := writer.WriteString(line + "\n"); err != nil {
+		return err
+	}
+
+	return writer.Flush() // 确保数据写入磁盘
 }
