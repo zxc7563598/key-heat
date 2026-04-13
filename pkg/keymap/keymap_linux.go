@@ -1,4 +1,4 @@
-//go:build !windows && !darwin && !linux
+//go:build linux
 
 package keymap
 
