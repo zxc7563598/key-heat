@@ -1,0 +1,63 @@
+name: Build Windows EXE (Wails3)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 拉代码
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. 安装 Go
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+
+      # 3. 安装 Node（前端用）
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 4. 安装 mingw（关键）
+      - name: Install MinGW
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-mingw-w64
+
+      # 5. 安装 Wails3 CLI
+      - name: Install Wails3
+        run: |
+          go install github.com/wailsapp/wails/v3/cmd/wails3@latest
+          echo "$HOME/go/bin" >> $GITHUB_PATH
+
+      # 6. 安装前端依赖
+      - name: Install frontend deps
+        run: |
+          if [ -f package.json ]; then
+            npm install
+          fi
+
+      # 7. 构建 Windows EXE
+      - name: Build Windows
+        env:
+          GOOS: windows
+          GOARCH: amd64
+          CGO_ENABLED: 1
+          CC: x86_64-w64-mingw32-gcc
+        run: |
+          wails3 package
+
+      # 8. 上传产物
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-exe
+          path: build/bin/*.exe
