@@ -31,6 +31,10 @@ jobs:
         run: |
           go install github.com/wailsapp/wails/v3/cmd/wails3@latest
           echo "$env:USERPROFILE\go\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      
+      - name: Install NSIS
+        run: |
+          choco install nsis -y
 
       - name: Install frontend deps (clean)
         run: |
