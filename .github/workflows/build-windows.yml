@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-windows:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       # 1. 拉代码
@@ -20,42 +20,37 @@ jobs:
         with:
           go-version: '1.25'
 
-      # 3. 安装 Node（前端用）
+      # 3. 安装 Node
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
-      # 4. 安装 mingw（关键）
-      - name: Install MinGW
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-mingw-w64
-
-      # 5. 安装 Wails3 CLI
+      # 4. 安装 Wails3 CLI
       - name: Install Wails3
         run: |
           go install github.com/wailsapp/wails/v3/cmd/wails3@latest
-          echo "$HOME/go/bin" >> $GITHUB_PATH
+          echo "$env:USERPROFILE\go\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-      # 6. 安装前端依赖
+      # 5. 安装前端依赖
       - name: Install frontend deps
         run: |
-          if [ -f package.json ]; then
+          if (Test-Path package.json) {
             npm install
-          fi
+          }
 
-      # 7. 构建 Windows EXE
+      # 6. 构建 Windows EXE
       - name: Build Windows
-        env:
-          GOOS: windows
-          GOARCH: amd64
-          CGO_ENABLED: 1
-          CC: x86_64-w64-mingw32-gcc
         run: |
           wails3 package
 
-      # 8. 上传产物
+      # 7. 查看产物（调试用，可删）
+      - name: List build output
+        run: |
+          Get-ChildItem -Recurse build
+
+      # 8. 上传 EXE
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
