@@ -6,10 +6,27 @@
 // @ts-ignore: Unused imports
 import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Create } from "@wailsio/runtime";
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore: Unused imports
+import * as keymap$0 from "./pkg/keymap/models.js";
+
 /**
- * @param {string} name
- * @returns {$CancellablePromise<string>}
+ * @param {string} layoutType
+ * @returns {$CancellablePromise<keymap$0.Layout>}
  */
-export function Greet(name) {
-    return $Call.ByID(1411160069, name);
+export function GetKeyLayout(layoutType) {
+    return $Call.ByID(3575703533, layoutType).then(/** @type {($result: any) => any} */(($result) => {
+        return $$createType0($result);
+    }));
 }
+
+// Private type creation functions
+var $$createType0 = /** @type {(...args: any[]) => any} */(function $$initCreateType0(...args) {
+    if ($$createType0 === $$initCreateType0) {
+        $$createType0 = $$createType3;
+    }
+    return $$createType0(...args);
+});
+const $$createType1 = keymap$0.Key.createFrom;
+const $$createType2 = $Create.Array($$createType1);
+const $$createType3 = $Create.Array($$createType2);
