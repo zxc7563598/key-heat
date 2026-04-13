@@ -2,7 +2,7 @@ name: Build Windows EXE (Wails3)
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -18,19 +18,27 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.25'
+          go-version: "1.25"
 
       # 3. 安装 Node
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       # 4. 安装 Wails3 CLI
       - name: Install Wails3
         run: |
           go install github.com/wailsapp/wails/v3/cmd/wails3@latest
           echo "$env:USERPROFILE\go\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Install frontend deps (clean)
+        run: |
+          cd frontend
+          if (Test-Path node_modules) { Remove-Item -Recurse -Force node_modules }
+          if (Test-Path package-lock.json) { Remove-Item -Force package-lock.json }
+          npm install
+          cd ..
 
       # 6. 构建 Windows EXE
       - name: Build Windows
