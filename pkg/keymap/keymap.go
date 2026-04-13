@@ -2,11 +2,23 @@ package keymap
 
 // KeyMapper 按键映射器接口
 type KeyMapper interface {
-	// Normalize 将平台相关的按键码转换为统一名称
 	Normalize(code any) string
 }
 
 var globalMapper KeyMapper
+
+type Layout [][]Key
+type Key struct {
+	Code  string
+	Label string
+	W     float64
+}
+
+type LayoutType string
+
+const (
+	LayoutANSI LayoutType = "ANSI"
+)
 
 // GetGlobalMapper 获取当前平台的映射器
 func GetGlobalMapper() KeyMapper {
@@ -115,7 +127,7 @@ const (
 	Key_F10             = "F10"
 	Key_F12             = "F12"
 	Key_F15             = "F15"
-	Key_Help            = "Help / Ins"
+	Key_Help            = "Help"
 	Key_Home            = "Home"
 	Key_PageUp          = "PageUp"
 	Key_ForwardDelete   = "Del"
