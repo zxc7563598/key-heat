@@ -64,5 +64,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: windows-exe
-          path: build/bin/*.exe
+          name: windows-build
+          path: |
+            bin/*.exe
+            build/windows/nsis/*.exe
