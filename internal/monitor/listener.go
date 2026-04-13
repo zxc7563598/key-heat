@@ -1,11 +1,7 @@
 package monitor
 
 import (
-	"bufio"
-	"fmt"
 	"log"
-	"os"
-	"path/filepath"
 	"sync"
 
 	hook "github.com/robotn/gohook"
@@ -53,18 +49,6 @@ func (l *KeyEventListener) Start() error {
 					"raw":  ev.Rawcode,
 					"type": "down",
 				})
-
-				// 测试写入
-				configDir, _ := os.UserConfigDir()
-				// 跨平台应用数据目录
-				// Windows: %APPDATA%/KeyHeat/
-				// macOS:   ~/Library/Application Support/KeyHeat/
-				// Linux:   ~/.config/KeyHeat/
-				appDir := filepath.Join(configDir, "KeyHeat")
-				textPath := filepath.Join(appDir, "keyheat.text")
-				line := fmt.Sprintf("按压Keycode: %v, 按压Rawcode: %v, 按压Keychar: %v, 对应按键: %v", ev.Keycode, ev.Rawcode, ev.Keychar, keyName)
-				appendLineToFile(textPath, line)
-
 				select {
 				case l.keyChan <- keyName:
 				default:
@@ -88,24 +72,4 @@ func (l *KeyEventListener) Stop() {
 	l.once.Do(func() {
 		close(l.stopChan)
 	})
-}
-
-func appendLineToFile(filePath string, line string) error {
-	// 确保目录存在
-	if err := os.MkdirAll(filepath.Dir(filePath), 0755); err != nil {
-		return err
-	}
-
-	file, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	writer := bufio.NewWriter(file)
-	if _, err := writer.WriteString(line + "\n"); err != nil {
-		return err
-	}
-
-	return writer.Flush() // 确保数据写入磁盘
 }
