@@ -11,7 +11,7 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 import * as keymap$0 from "./pkg/keymap/models.js";
 
 /**
- * @param {string} layoutType
+ * @param {keymap$0.LayoutType} layoutType
  * @returns {$CancellablePromise<keymap$0.Layout>}
  */
 export function GetKeyLayout(layoutType) {

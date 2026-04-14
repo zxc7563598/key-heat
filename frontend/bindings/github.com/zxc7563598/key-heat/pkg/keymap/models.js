@@ -51,3 +51,16 @@ export class Key {
 /**
  * @typedef {Key[][]} Layout
  */
+
+/**
+ * @readonly
+ * @enum {string}
+ */
+export const LayoutType = {
+    /**
+     * The Go zero value for the underlying type of the enum.
+     */
+    $zero: "",
+
+    LayoutANSI: "ANSI",
+};
