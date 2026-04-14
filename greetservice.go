@@ -9,6 +9,6 @@ type GreetService struct {
 	repo storage.Repository
 }
 
-func (g *GreetService) GetKeyLayout(layoutType string) keymap.Layout {
-	return keymap.GetKeyLayout(keymap.LayoutANSI)
+func (g *GreetService) GetKeyLayout(layoutType keymap.LayoutType) keymap.Layout {
+	return keymap.GetKeyLayout(layoutType)
 }
