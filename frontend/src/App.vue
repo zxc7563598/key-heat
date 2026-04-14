@@ -11,6 +11,7 @@ import Keyboard from "./components/Keyboard.vue";
 <style scoped>
 .keyboard-wrapper {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   background: #f2f3f5;

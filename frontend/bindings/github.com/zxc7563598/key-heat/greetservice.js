@@ -11,22 +11,34 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 import * as keymap$0 from "./pkg/keymap/models.js";
 
 /**
+ * @param {string} start
+ * @param {string} end
+ * @returns {$CancellablePromise<{ [_ in string]?: number }>}
+ */
+export function GetHeatmap(start, end) {
+    return $Call.ByID(1207189172, start, end).then(/** @type {($result: any) => any} */(($result) => {
+        return $$createType0($result);
+    }));
+}
+
+/**
  * @param {keymap$0.LayoutType} layoutType
  * @returns {$CancellablePromise<keymap$0.Layout>}
  */
 export function GetKeyLayout(layoutType) {
     return $Call.ByID(3575703533, layoutType).then(/** @type {($result: any) => any} */(($result) => {
-        return $$createType0($result);
+        return $$createType1($result);
     }));
 }
 
 // Private type creation functions
-var $$createType0 = /** @type {(...args: any[]) => any} */(function $$initCreateType0(...args) {
-    if ($$createType0 === $$initCreateType0) {
-        $$createType0 = $$createType3;
+const $$createType0 = $Create.Map($Create.Any, $Create.Any);
+var $$createType1 = /** @type {(...args: any[]) => any} */(function $$initCreateType1(...args) {
+    if ($$createType1 === $$initCreateType1) {
+        $$createType1 = $$createType4;
     }
-    return $$createType0(...args);
+    return $$createType1(...args);
 });
-const $$createType1 = keymap$0.Key.createFrom;
-const $$createType2 = $Create.Array($$createType1);
+const $$createType2 = keymap$0.Key.createFrom;
 const $$createType3 = $Create.Array($$createType2);
+const $$createType4 = $Create.Array($$createType3);
