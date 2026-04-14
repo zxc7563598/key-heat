@@ -2,23 +2,23 @@
 import { Events } from "@wailsio/runtime";
 import { ref, onMounted, onBeforeUnmount, nextTick, computed } from 'vue'
 import { GetKeyLayout } from "../../bindings/github.com/zxc7563598/key-heat/greetservice";
-const layout = ref([])
 
+// 标记基础单位的按键
 const keyHeight = ref(52)
-
 const standardKeyRef = ref(null)
-
 const setStandardKeyRef = (el, key) => {
   if (key.W === 1 && el && !standardKeyRef.value) {
     standardKeyRef.value = el
   }
 }
 
+// 按键按压状态
 const activeKeys = ref(new Set())
 const handleBlur = () => {
   activeKeys.value = new Set()
 }
 
+// 按键边界范围控制
 const getKeyContentStyle = (key) => {
   return {
     flex: key.W,
@@ -26,18 +26,12 @@ const getKeyContentStyle = (key) => {
   }
 }
 
-const baseKeyStyle = {
-  background: "#f5f5f7",
-  boxShadow: "3px 3px 6px rgba(0, 0, 0, 0.08), -3px -3px 6px rgba(255, 255, 255, 0.9)",
-  textAlign: "center"
-}
-
+// 按键动态样式
 const keyStyleCache = computed(() => {
   const h = keyHeight.value
   const gap = Math.floor(h / 9)
   const fontSize = Math.floor(h / 4)
   const size = `calc(100% - ${gap * 2}px)`
-
   return {
     fontSize: `${fontSize}px`,
     margin: `${gap}px`,
@@ -46,49 +40,40 @@ const keyStyleCache = computed(() => {
   }
 })
 
+
+
 let observer
-
-const eventKey = ref("")
-const eventRaw = ref("")
-const eventType = ref("")
-
+const layout = ref([])
 onMounted(() => {
-  GetKeyLayout("ANSI")
-    .then(async (result) => {
+  // 获取键盘布局
+  GetKeyLayout("ANSI").then(async (result) => {
       layout.value = result
-
-      // 👇 等 DOM 渲染完成
+      // 等 DOM 渲染完成
       await nextTick()
-
+      // 计算按键高度
       const el = standardKeyRef.value
       if (!el) return
-
       observer = new ResizeObserver(([entry]) => {
         const width = entry.contentRect.width
         if (width > 0) {
           keyHeight.value = width
         }
       })
-
       observer.observe(el)
-
       window.addEventListener("blur", handleBlur)
-    })
-    .catch((err) => {
+    }).catch((err) => {
       console.log(err)
     })
 
-  // 键盘事件监听（这个可以独立）
+  // 键盘事件监听
   Events.On("key:pressed", (event) => {
     const { key, type } = event.data
     const next = new Set(activeKeys.value)
-
     if (type === "down") {
       next.add(key)
     } else if (type === "up") {
       next.delete(key)
     }
-
     activeKeys.value = next
   })
 })
@@ -106,7 +91,7 @@ onBeforeUnmount(() => {
       <div v-for="key in row" :key="key.Code" class="key-content" :style="getKeyContentStyle(key)"
         :ref="el => setStandardKeyRef(el, key)">
         <div class="key" :class="{ active: activeKeys.has(key.Code) }"
-          :style="key.Code === 'None' ? null : [baseKeyStyle, keyStyleCache]">
+          :style="key.Code === 'None' ? null : keyStyleCache">
           {{ key.Label }}
         </div>
       </div>
@@ -136,6 +121,9 @@ onBeforeUnmount(() => {
 }
 
 .key {
+  background: #f5f5f7;
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.08), -3px -3px 6px rgba(255, 255, 255, 0.9);
+  text-align: center;
   white-space: pre-wrap;
   box-sizing: border-box;
   display: flex;
