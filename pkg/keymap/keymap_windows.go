@@ -214,204 +214,127 @@ func init() {
 	mapper := &windowsMapper{
 		codeToName: make(map[VirtualKeyCode]string),
 	}
-	mapper.codeToName[VK_LBUTTON] = "VK_LBUTTON"
-	mapper.codeToName[VK_RBUTTON] = "VK_RBUTTON"
-	mapper.codeToName[VK_CANCEL] = "VK_CANCEL"
-	mapper.codeToName[VK_MBUTTON] = "VK_MBUTTON"
-	mapper.codeToName[VK_XBUTTON1] = "VK_XBUTTON1"
-	mapper.codeToName[VK_XBUTTON2] = "VK_XBUTTON2"
-	mapper.codeToName[VK_BACK] = "VK_BACK"
-	mapper.codeToName[VK_TAB] = "VK_TAB"
-	mapper.codeToName[VK_CLEAR] = "VK_CLEAR"
-	mapper.codeToName[VK_RETURN] = "VK_RETURN"
-	mapper.codeToName[VK_SHIFT] = "VK_SHIFT"
-	mapper.codeToName[VK_CONTROL] = "VK_CONTROL"
-	mapper.codeToName[VK_MENU] = "VK_MENU"
-	mapper.codeToName[VK_PAUSE] = "VK_PAUSE"
-	mapper.codeToName[VK_CAPITAL] = "VK_CAPITAL"
-	mapper.codeToName[VK_KANA] = "VK_KANA"
-	mapper.codeToName[VK_HANGUL] = "VK_HANGUL"
-	mapper.codeToName[VK_IME_ON] = "VK_IME_ON"
-	mapper.codeToName[VK_JUNJA] = "VK_JUNJA"
-	mapper.codeToName[VK_FINAL] = "VK_FINAL"
-	mapper.codeToName[VK_HANJA] = "VK_HANJA"
-	mapper.codeToName[VK_KANJI] = "VK_KANJI"
-	mapper.codeToName[VK_IME_OFF] = "VK_IME_OFF"
-	mapper.codeToName[VK_ESCAPE] = "VK_ESCAPE"
-	mapper.codeToName[VK_CONVERT] = "VK_CONVERT"
-	mapper.codeToName[VK_NONCONVERT] = "VK_NONCONVERT"
-	mapper.codeToName[VK_ACCEPT] = "VK_ACCEPT"
-	mapper.codeToName[VK_MODECHANGE] = "VK_MODECHANGE"
-	mapper.codeToName[VK_SPACE] = "VK_SPACE"
-	mapper.codeToName[VK_PRIOR] = "VK_PRIOR"
-	mapper.codeToName[VK_NEXT] = "VK_NEXT"
-	mapper.codeToName[VK_END] = "VK_END"
-	mapper.codeToName[VK_HOME] = "VK_HOME"
-	mapper.codeToName[VK_LEFT] = "VK_LEFT"
-	mapper.codeToName[VK_UP] = "VK_UP"
-	mapper.codeToName[VK_RIGHT] = "VK_RIGHT"
-	mapper.codeToName[VK_DOWN] = "VK_DOWN"
-	mapper.codeToName[VK_SELECT] = "VK_SELECT"
-	mapper.codeToName[VK_PRINT] = "VK_PRINT"
-	mapper.codeToName[VK_EXECUTE] = "VK_EXECUTE"
-	mapper.codeToName[VK_SNAPSHOT] = "VK_SNAPSHOT"
-	mapper.codeToName[VK_INSERT] = "VK_INSERT"
-	mapper.codeToName[VK_DELETE] = "VK_DELETE"
-	mapper.codeToName[VK_HELP] = "VK_HELP"
-	mapper.codeToName[VK_0] = "VK_0"
-	mapper.codeToName[VK_1] = "VK_1"
-	mapper.codeToName[VK_2] = "VK_2"
-	mapper.codeToName[VK_3] = "VK_3"
-	mapper.codeToName[VK_4] = "VK_4"
-	mapper.codeToName[VK_5] = "VK_5"
-	mapper.codeToName[VK_6] = "VK_6"
-	mapper.codeToName[VK_7] = "VK_7"
-	mapper.codeToName[VK_8] = "VK_8"
-	mapper.codeToName[VK_9] = "VK_9"
-	mapper.codeToName[VK_A] = "VK_A"
-	mapper.codeToName[VK_B] = "VK_B"
-	mapper.codeToName[VK_C] = "VK_C"
-	mapper.codeToName[VK_D] = "VK_D"
-	mapper.codeToName[VK_E] = "VK_E"
-	mapper.codeToName[VK_F] = "VK_F"
-	mapper.codeToName[VK_G] = "VK_G"
-	mapper.codeToName[VK_H] = "VK_H"
-	mapper.codeToName[VK_I] = "VK_I"
-	mapper.codeToName[VK_J] = "VK_J"
-	mapper.codeToName[VK_K] = "VK_K"
-	mapper.codeToName[VK_L] = "VK_L"
-	mapper.codeToName[VK_M] = "VK_M"
-	mapper.codeToName[VK_N] = "VK_N"
-	mapper.codeToName[VK_O] = "VK_O"
-	mapper.codeToName[VK_P] = "VK_P"
-	mapper.codeToName[VK_Q] = "VK_Q"
-	mapper.codeToName[VK_R] = "VK_R"
-	mapper.codeToName[VK_S] = "VK_S"
-	mapper.codeToName[VK_T] = "VK_T"
-	mapper.codeToName[VK_U] = "VK_U"
-	mapper.codeToName[VK_V] = "VK_V"
-	mapper.codeToName[VK_W] = "VK_W"
-	mapper.codeToName[VK_X] = "VK_X"
-	mapper.codeToName[VK_Y] = "VK_Y"
-	mapper.codeToName[VK_Z] = "VK_Z"
-	mapper.codeToName[VK_LWIN] = "VK_LWIN"
-	mapper.codeToName[VK_RWIN] = "VK_RWIN"
-	mapper.codeToName[VK_APPS] = "VK_APPS"
-	mapper.codeToName[VK_SLEEP] = "VK_SLEEP"
-	mapper.codeToName[VK_NUMPAD0] = "VK_NUMPAD0"
-	mapper.codeToName[VK_NUMPAD1] = "VK_NUMPAD1"
-	mapper.codeToName[VK_NUMPAD2] = "VK_NUMPAD2"
-	mapper.codeToName[VK_NUMPAD3] = "VK_NUMPAD3"
-	mapper.codeToName[VK_NUMPAD4] = "VK_NUMPAD4"
-	mapper.codeToName[VK_NUMPAD5] = "VK_NUMPAD5"
-	mapper.codeToName[VK_NUMPAD6] = "VK_NUMPAD6"
-	mapper.codeToName[VK_NUMPAD7] = "VK_NUMPAD7"
-	mapper.codeToName[VK_NUMPAD8] = "VK_NUMPAD8"
-	mapper.codeToName[VK_NUMPAD9] = "VK_NUMPAD9"
-	mapper.codeToName[VK_MULTIPLY] = "VK_MULTIPLY"
-	mapper.codeToName[VK_ADD] = "VK_ADD"
-	mapper.codeToName[VK_SEPARATOR] = "VK_SEPARATOR"
-	mapper.codeToName[VK_SUBTRACT] = "VK_SUBTRACT"
-	mapper.codeToName[VK_DECIMAL] = "VK_DECIMAL"
-	mapper.codeToName[VK_DIVIDE] = "VK_DIVIDE"
-	mapper.codeToName[VK_F1] = "VK_F1"
-	mapper.codeToName[VK_F2] = "VK_F2"
-	mapper.codeToName[VK_F3] = "VK_F3"
-	mapper.codeToName[VK_F4] = "VK_F4"
-	mapper.codeToName[VK_F5] = "VK_F5"
-	mapper.codeToName[VK_F6] = "VK_F6"
-	mapper.codeToName[VK_F7] = "VK_F7"
-	mapper.codeToName[VK_F8] = "VK_F8"
-	mapper.codeToName[VK_F9] = "VK_F9"
-	mapper.codeToName[VK_F10] = "VK_F10"
-	mapper.codeToName[VK_F11] = "VK_F11"
-	mapper.codeToName[VK_F12] = "VK_F12"
-	mapper.codeToName[VK_F13] = "VK_F13"
-	mapper.codeToName[VK_F14] = "VK_F14"
-	mapper.codeToName[VK_F15] = "VK_F15"
-	mapper.codeToName[VK_F16] = "VK_F16"
-	mapper.codeToName[VK_F17] = "VK_F17"
-	mapper.codeToName[VK_F18] = "VK_F18"
-	mapper.codeToName[VK_F19] = "VK_F19"
-	mapper.codeToName[VK_F20] = "VK_F20"
-	mapper.codeToName[VK_F21] = "VK_F21"
-	mapper.codeToName[VK_F22] = "VK_F22"
-	mapper.codeToName[VK_F23] = "VK_F23"
-	mapper.codeToName[VK_F24] = "VK_F24"
-	mapper.codeToName[VK_NUMLOCK] = "VK_NUMLOCK"
-	mapper.codeToName[VK_SCROLL] = "VK_SCROLL"
-	mapper.codeToName[VK_LSHIFT] = "VK_LSHIFT"
-	mapper.codeToName[VK_RSHIFT] = "VK_RSHIFT"
-	mapper.codeToName[VK_LCONTROL] = "VK_LCONTROL"
-	mapper.codeToName[VK_RCONTROL] = "VK_RCONTROL"
-	mapper.codeToName[VK_LMENU] = "VK_LMENU"
-	mapper.codeToName[VK_RMENU] = "VK_RMENU"
-	mapper.codeToName[VK_BROWSER_BACK] = "VK_BROWSER_BACK"
-	mapper.codeToName[VK_BROWSER_FORWARD] = "VK_BROWSER_FORWARD"
-	mapper.codeToName[VK_BROWSER_REFRESH] = "VK_BROWSER_REFRESH"
-	mapper.codeToName[VK_BROWSER_STOP] = "VK_BROWSER_STOP"
-	mapper.codeToName[VK_BROWSER_SEARCH] = "VK_BROWSER_SEARCH"
-	mapper.codeToName[VK_BROWSER_FAVORITES] = "VK_BROWSER_FAVORITES"
-	mapper.codeToName[VK_BROWSER_HOME] = "VK_BROWSER_HOME"
-	mapper.codeToName[VK_VOLUME_MUTE] = "VK_VOLUME_MUTE"
-	mapper.codeToName[VK_VOLUME_DOWN] = "VK_VOLUME_DOWN"
-	mapper.codeToName[VK_VOLUME_UP] = "VK_VOLUME_UP"
-	mapper.codeToName[VK_MEDIA_NEXT_TRACK] = "VK_MEDIA_NEXT_TRACK"
-	mapper.codeToName[VK_MEDIA_PREV_TRACK] = "VK_MEDIA_PREV_TRACK"
-	mapper.codeToName[VK_MEDIA_STOP] = "VK_MEDIA_STOP"
-	mapper.codeToName[VK_MEDIA_PLAY_PAUSE] = "VK_MEDIA_PLAY_PAUSE"
-	mapper.codeToName[VK_LAUNCH_MAIL] = "VK_LAUNCH_MAIL"
-	mapper.codeToName[VK_LAUNCH_MEDIA_SELECT] = "VK_LAUNCH_MEDIA_SELECT"
-	mapper.codeToName[VK_LAUNCH_APP1] = "VK_LAUNCH_APP1"
-	mapper.codeToName[VK_LAUNCH_APP2] = "VK_LAUNCH_APP2"
-	mapper.codeToName[VK_OEM_1] = "VK_OEM_1"
-	mapper.codeToName[VK_OEM_PLUS] = "VK_OEM_PLUS"
-	mapper.codeToName[VK_OEM_COMMA] = "VK_OEM_COMMA"
-	mapper.codeToName[VK_OEM_MINUS] = "VK_OEM_MINUS"
-	mapper.codeToName[VK_OEM_PERIOD] = "VK_OEM_PERIOD"
-	mapper.codeToName[VK_OEM_2] = "VK_OEM_2"
-	mapper.codeToName[VK_OEM_3] = "VK_OEM_3"
-	mapper.codeToName[VK_GAMEPAD_A] = "VK_GAMEPAD_A"
-	mapper.codeToName[VK_GAMEPAD_B] = "VK_GAMEPAD_B"
-	mapper.codeToName[VK_GAMEPAD_X] = "VK_GAMEPAD_X"
-	mapper.codeToName[VK_GAMEPAD_Y] = "VK_GAMEPAD_Y"
-	mapper.codeToName[VK_GAMEPAD_RIGHT_SHOULDER] = "VK_GAMEPAD_RIGHT_SHOULDER"
-	mapper.codeToName[VK_GAMEPAD_LEFT_SHOULDER] = "VK_GAMEPAD_LEFT_SHOULDER"
-	mapper.codeToName[VK_GAMEPAD_LEFT_TRIGGER] = "VK_GAMEPAD_LEFT_TRIGGER"
-	mapper.codeToName[VK_GAMEPAD_RIGHT_TRIGGER] = "VK_GAMEPAD_RIGHT_TRIGGER"
-	mapper.codeToName[VK_GAMEPAD_DPAD_UP] = "VK_GAMEPAD_DPAD_UP"
-	mapper.codeToName[VK_GAMEPAD_DPAD_DOWN] = "VK_GAMEPAD_DPAD_DOWN"
-	mapper.codeToName[VK_GAMEPAD_DPAD_LEFT] = "VK_GAMEPAD_DPAD_LEFT"
-	mapper.codeToName[VK_GAMEPAD_DPAD_RIGHT] = "VK_GAMEPAD_DPAD_RIGHT"
-	mapper.codeToName[VK_GAMEPAD_MENU] = "VK_GAMEPAD_MENU"
-	mapper.codeToName[VK_GAMEPAD_VIEW] = "VK_GAMEPAD_VIEW"
-	mapper.codeToName[VK_GAMEPAD_LEFT_THUMBSTICK_BUTTON] = "VK_GAMEPAD_LEFT_THUMBSTICK_BUTTON"
-	mapper.codeToName[VK_GAMEPAD_RIGHT_THUMBSTICK_BUTTON] = "VK_GAMEPAD_RIGHT_THUMBSTICK_BUTTON"
-	mapper.codeToName[VK_GAMEPAD_LEFT_THUMBSTICK_UP] = "VK_GAMEPAD_LEFT_THUMBSTICK_UP"
-	mapper.codeToName[VK_GAMEPAD_LEFT_THUMBSTICK_DOWN] = "VK_GAMEPAD_LEFT_THUMBSTICK_DOWN"
-	mapper.codeToName[VK_GAMEPAD_LEFT_THUMBSTICK_RIGHT] = "VK_GAMEPAD_LEFT_THUMBSTICK_RIGHT"
-	mapper.codeToName[VK_GAMEPAD_LEFT_THUMBSTICK_LEFT] = "VK_GAMEPAD_LEFT_THUMBSTICK_LEFT"
-	mapper.codeToName[VK_GAMEPAD_RIGHT_THUMBSTICK_UP] = "VK_GAMEPAD_RIGHT_THUMBSTICK_UP"
-	mapper.codeToName[VK_GAMEPAD_RIGHT_THUMBSTICK_DOWN] = "VK_GAMEPAD_RIGHT_THUMBSTICK_DOWN"
-	mapper.codeToName[VK_GAMEPAD_RIGHT_THUMBSTICK_RIGHT] = "VK_GAMEPAD_RIGHT_THUMBSTICK_RIGHT"
-	mapper.codeToName[VK_GAMEPAD_RIGHT_THUMBSTICK_LEFT] = "VK_GAMEPAD_RIGHT_THUMBSTICK_LEFT"
-	mapper.codeToName[VK_OEM_4] = "VK_OEM_4"
-	mapper.codeToName[VK_OEM_5] = "VK_OEM_5"
-	mapper.codeToName[VK_OEM_6] = "VK_OEM_6"
-	mapper.codeToName[VK_OEM_7] = "VK_OEM_7"
-	mapper.codeToName[VK_OEM_8] = "VK_OEM_8"
-	mapper.codeToName[VK_OEM_102] = "VK_OEM_102"
-	mapper.codeToName[VK_PROCESSKEY] = "VK_PROCESSKEY"
-	mapper.codeToName[VK_PACKET] = "VK_PACKET"
-	mapper.codeToName[VK_ATTN] = "VK_ATTN"
-	mapper.codeToName[VK_CRSEL] = "VK_CRSEL"
-	mapper.codeToName[VK_EXSEL] = "VK_EXSEL"
-	mapper.codeToName[VK_EREOF] = "VK_EREOF"
-	mapper.codeToName[VK_PLAY] = "VK_PLAY"
-	mapper.codeToName[VK_ZOOM] = "VK_ZOOM"
-	mapper.codeToName[VK_NONAME] = "VK_NONAME"
-	mapper.codeToName[VK_PA1] = "VK_PA1"
-	mapper.codeToName[VK_OEM_CLEAR] = "VK_OEM_CLEAR"
+
+	mapper.codeToName[VK_ESCAPE] = Key_Escape
+	mapper.codeToName[VK_F1] = Key_F1
+	mapper.codeToName[VK_F2] = Key_F2
+	mapper.codeToName[VK_F3] = Key_F3
+	mapper.codeToName[VK_F4] = Key_F4
+	mapper.codeToName[VK_F5] = Key_F5
+	mapper.codeToName[VK_F6] = Key_F6
+	mapper.codeToName[VK_F7] = Key_F7
+	mapper.codeToName[VK_F8] = Key_F8
+	mapper.codeToName[VK_F9] = Key_F9
+	mapper.codeToName[VK_F10] = Key_F10
+	mapper.codeToName[VK_F11] = Key_F11
+	mapper.codeToName[VK_F12] = Key_F12
+	mapper.codeToName[VK_F13] = Key_F13
+	mapper.codeToName[VK_F14] = Key_F14
+	mapper.codeToName[VK_F15] = Key_F15
+	mapper.codeToName[VK_F16] = Key_F16
+	mapper.codeToName[VK_F17] = Key_F17
+	mapper.codeToName[VK_F18] = Key_F18
+	mapper.codeToName[VK_F19] = Key_F19
+	mapper.codeToName[VK_F20] = Key_F20
+	mapper.codeToName[VK_PRINT] = Key_Print
+	mapper.codeToName[VK_SCROLL] = Key_Scroll
+	mapper.codeToName[VK_PAUSE] = Key_Pause
+
+	mapper.codeToName[VK_OEM_3] = Key_Grave
+	mapper.codeToName[VK_1] = Key_1
+	mapper.codeToName[VK_2] = Key_2
+	mapper.codeToName[VK_3] = Key_3
+	mapper.codeToName[VK_4] = Key_4
+	mapper.codeToName[VK_5] = Key_5
+	mapper.codeToName[VK_6] = Key_6
+	mapper.codeToName[VK_7] = Key_7
+	mapper.codeToName[VK_8] = Key_8
+	mapper.codeToName[VK_9] = Key_9
+	mapper.codeToName[VK_0] = Key_0
+	mapper.codeToName[VK_OEM_MINUS] = Key_Minus
+	mapper.codeToName[VK_OEM_PLUS] = Key_Equal
+	mapper.codeToName[VK_BACK] = Key_Delete
+	mapper.codeToName[VK_INSERT] = Key_Insert
+	mapper.codeToName[VK_HOME] = Key_Home
+	mapper.codeToName[VK_PRIOR] = Key_PageUp
+
+	mapper.codeToName[VK_TAB] = Key_Tab
+	mapper.codeToName[VK_Q] = Key_Q
+	mapper.codeToName[VK_W] = Key_W
+	mapper.codeToName[VK_E] = Key_E
+	mapper.codeToName[VK_R] = Key_R
+	mapper.codeToName[VK_T] = Key_T
+	mapper.codeToName[VK_Y] = Key_Y
+	mapper.codeToName[VK_U] = Key_U
+	mapper.codeToName[VK_I] = Key_I
+	mapper.codeToName[VK_O] = Key_O
+	mapper.codeToName[VK_P] = Key_P
+	mapper.codeToName[VK_OEM_4] = Key_LeftBracket
+	mapper.codeToName[VK_OEM_6] = Key_RightBracket
+	mapper.codeToName[VK_OEM_5] = Key_Backslash
+	mapper.codeToName[VK_DELETE] = Key_ForwardDelete
+	mapper.codeToName[VK_END] = Key_End
+	mapper.codeToName[VK_NEXT] = Key_PageDown
+
+	mapper.codeToName[VK_CAPITAL] = Key_CapsLock
+	mapper.codeToName[VK_A] = Key_A
+	mapper.codeToName[VK_S] = Key_S
+	mapper.codeToName[VK_D] = Key_D
+	mapper.codeToName[VK_F] = Key_F
+	mapper.codeToName[VK_G] = Key_G
+	mapper.codeToName[VK_H] = Key_H
+	mapper.codeToName[VK_J] = Key_J
+	mapper.codeToName[VK_K] = Key_K
+	mapper.codeToName[VK_L] = Key_L
+	mapper.codeToName[VK_OEM_1] = Key_Semicolon
+	mapper.codeToName[VK_OEM_7] = Key_Quote
+	mapper.codeToName[VK_RETURN] = Key_Return
+
+	mapper.codeToName[VK_LSHIFT] = Key_Shift
+	mapper.codeToName[VK_Z] = Key_Z
+	mapper.codeToName[VK_X] = Key_X
+	mapper.codeToName[VK_C] = Key_C
+	mapper.codeToName[VK_V] = Key_V
+	mapper.codeToName[VK_B] = Key_B
+	mapper.codeToName[VK_N] = Key_N
+	mapper.codeToName[VK_M] = Key_M
+	mapper.codeToName[VK_OEM_COMMA] = Key_Comma
+	mapper.codeToName[VK_OEM_PERIOD] = Key_Period
+	mapper.codeToName[VK_OEM_2] = Key_Slash
+	mapper.codeToName[VK_RSHIFT] = Key_RightShift
+
+	mapper.codeToName[VK_LCONTROL] = Key_Ctrl
+	mapper.codeToName[VK_LWIN] = Key_Win
+	mapper.codeToName[VK_LMENU] = Key_Alt
+	mapper.codeToName[VK_SPACE] = Key_Space
+	mapper.codeToName[VK_RMENU] = Key_RightAlt
+	mapper.codeToName[VK_RWIN] = Key_RightWin
+	mapper.codeToName[VK_APPS] = Key_RightMenu
+	mapper.codeToName[VK_RCONTROL] = Key_RightCtrl
+
+	mapper.codeToName[VK_UP] = Key_UpArrow
+	mapper.codeToName[VK_DOWN] = Key_DownArrow
+	mapper.codeToName[VK_LEFT] = Key_LeftArrow
+	mapper.codeToName[VK_RIGHT] = Key_RightArrow
+
+	mapper.codeToName[VK_NUMLOCK] = Key_KeypadClear
+	mapper.codeToName[VK_DECIMAL] = Key_KeypadDecimal
+	mapper.codeToName[VK_MULTIPLY] = Key_KeypadMultiply
+	mapper.codeToName[VK_ADD] = Key_KeypadPlus
+	mapper.codeToName[VK_DIVIDE] = Key_KeypadDivide
+	mapper.codeToName[VK_SEPARATOR] = Key_KeypadEnter
+	mapper.codeToName[VK_SUBTRACT] = Key_KeypadMinus
+	mapper.codeToName[VK_NUMPAD0] = Key_Keypad0
+	mapper.codeToName[VK_NUMPAD1] = Key_Keypad1
+	mapper.codeToName[VK_NUMPAD2] = Key_Keypad2
+	mapper.codeToName[VK_NUMPAD3] = Key_Keypad3
+	mapper.codeToName[VK_NUMPAD4] = Key_Keypad4
+	mapper.codeToName[VK_NUMPAD5] = Key_Keypad5
+	mapper.codeToName[VK_NUMPAD6] = Key_Keypad6
+	mapper.codeToName[VK_NUMPAD7] = Key_Keypad7
+	mapper.codeToName[VK_NUMPAD8] = Key_Keypad8
+	mapper.codeToName[VK_NUMPAD9] = Key_Keypad9
+
 	globalMapper = mapper
 }
 
@@ -432,5 +355,153 @@ func (m *windowsMapper) Normalize(code any) string {
 }
 
 func GetKeyLayout(l LayoutType) Layout {
-	return Layout{}
+	switch l {
+	case LayoutANSI:
+		return Layout{
+			{
+				{Code: "Esc", Label: "Esc", W: 1},
+				{Code: "None", Label: "", W: 1},
+				{Code: "F1", Label: "F1", W: 1},
+				{Code: "F2", Label: "F2", W: 1},
+				{Code: "F3", Label: "F3", W: 1},
+				{Code: "F4", Label: "F4", W: 1},
+				{Code: "None", Label: "", W: 0.5},
+				{Code: "F5", Label: "F5", W: 1},
+				{Code: "F6", Label: "F6", W: 1},
+				{Code: "F7", Label: "F7", W: 1},
+				{Code: "F8", Label: "F8", W: 1},
+				{Code: "None", Label: "", W: 0.5},
+				{Code: "F9", Label: "F9", W: 1},
+				{Code: "F10", Label: "F10", W: 1},
+				{Code: "F11", Label: "F11", W: 1},
+				{Code: "F12", Label: "F12", W: 1},
+				{Code: "None", Label: "", W: 0.2},
+				{Code: "Print", Label: "PrtSc", W: 1},
+				{Code: "Scroll", Label: "Scroll\nLock", W: 1},
+				{Code: "Pause", Label: "Pause\nBreak", W: 1},
+				{Code: "None", Label: "", W: 0.2},
+				{Code: "None", Label: "", W: 1},
+				{Code: "None", Label: "", W: 1},
+				{Code: "None", Label: "", W: 1},
+				{Code: "None", Label: "", W: 1},
+			},
+			{
+				{Code: "`", Label: "`", W: 1},
+				{Code: "1", Label: "1", W: 1},
+				{Code: "2", Label: "2", W: 1},
+				{Code: "3", Label: "3", W: 1},
+				{Code: "4", Label: "4", W: 1},
+				{Code: "5", Label: "5", W: 1},
+				{Code: "6", Label: "6", W: 1},
+				{Code: "7", Label: "7", W: 1},
+				{Code: "8", Label: "8", W: 1},
+				{Code: "9", Label: "9", W: 1},
+				{Code: "0", Label: "0", W: 1},
+				{Code: "-", Label: "-", W: 1},
+				{Code: "=", Label: "=", W: 1},
+				{Code: "Delete", Label: "⌫", W: 2},
+				{Code: "None", Label: "", W: 0.2},
+				{Code: "Insert", Label: "Ins", W: 1},
+				{Code: "Home", Label: "Home", W: 1},
+				{Code: "PageUp", Label: "PgUp", W: 1},
+				{Code: "None", Label: "", W: 0.2},
+				{Code: "NumLock", Label: "Num\nLock", W: 1},
+				{Code: "NumPad /", Label: "/", W: 1},
+				{Code: "NumPad *", Label: "*", W: 1},
+				{Code: "NumPad -", Label: "-", W: 1},
+			},
+			{
+				{Code: "Tab", Label: "⇥", W: 1.5},
+				{Code: "Q", Label: "Q", W: 1},
+				{Code: "W", Label: "W", W: 1},
+				{Code: "E", Label: "E", W: 1},
+				{Code: "R", Label: "R", W: 1},
+				{Code: "T", Label: "T", W: 1},
+				{Code: "Y", Label: "Y", W: 1},
+				{Code: "U", Label: "U", W: 1},
+				{Code: "I", Label: "I", W: 1},
+				{Code: "O", Label: "O", W: 1},
+				{Code: "P", Label: "P", W: 1},
+				{Code: "[", Label: "[", W: 1},
+				{Code: "]", Label: "]", W: 1},
+				{Code: "\\", Label: "\\", W: 1.5},
+				{Code: "None", Label: "", W: 0.2},
+				{Code: "Del", Label: "Delete", W: 1},
+				{Code: "End", Label: "End", W: 1},
+				{Code: "PageDown", Label: "PgDn", W: 1},
+				{Code: "None", Label: "", W: 0.2},
+				{Code: "NumPad7", Label: "7", W: 1},
+				{Code: "NumPad8", Label: "8", W: 1},
+				{Code: "NumPad9", Label: "9", W: 1},
+				{Code: "NumPad +", Label: "+", W: 1},
+			},
+			{
+				{Code: "CapsLock", Label: "⇪", W: 1.75},
+				{Code: "A", Label: "A", W: 1},
+				{Code: "S", Label: "S", W: 1},
+				{Code: "D", Label: "D", W: 1},
+				{Code: "F", Label: "F", W: 1},
+				{Code: "G", Label: "G", W: 1},
+				{Code: "H", Label: "H", W: 1},
+				{Code: "J", Label: "J", W: 1},
+				{Code: "K", Label: "K", W: 1},
+				{Code: "L", Label: "L", W: 1},
+				{Code: ";", Label: ";", W: 1},
+				{Code: "'", Label: "'", W: 1},
+				{Code: "Enter", Label: "⏎", W: 2.25},
+				{Code: "None", Label: "", W: 0.2},
+				{Code: "None", Label: "", W: 1},
+				{Code: "None", Label: "", W: 1},
+				{Code: "None", Label: "", W: 1},
+				{Code: "None", Label: "", W: 0.2},
+				{Code: "NumPad4", Label: "4", W: 1},
+				{Code: "NumPad5", Label: "5", W: 1},
+				{Code: "NumPad6", Label: "6", W: 1},
+				{Code: "NumPad +", Label: "+", W: 1},
+			},
+			{
+				{Code: "Shift", Label: "⇧", W: 2.25},
+				{Code: "Z", Label: "Z", W: 1},
+				{Code: "X", Label: "X", W: 1},
+				{Code: "C", Label: "C", W: 1},
+				{Code: "V", Label: "V", W: 1},
+				{Code: "B", Label: "B", W: 1},
+				{Code: "N", Label: "N", W: 1},
+				{Code: "M", Label: "M", W: 1},
+				{Code: ",", Label: ",", W: 1},
+				{Code: ".", Label: ".", W: 1},
+				{Code: "/", Label: "/", W: 1},
+				{Code: "RightShift", Label: "⇧", W: 2.75},
+				{Code: "None", Label: "", W: 0.2},
+				{Code: "None", Label: "", W: 1},
+				{Code: "↑", Label: "▲", W: 1},
+				{Code: "None", Label: "", W: 1},
+				{Code: "None", Label: "", W: 0.2},
+				{Code: "NumPad1", Label: "1", W: 1},
+				{Code: "NumPad2", Label: "2", W: 1},
+				{Code: "NumPad3", Label: "3", W: 1},
+				{Code: "NumPad Enter", Label: "⏎", W: 1},
+			},
+			{
+				{Code: "Ctrl", Label: "Fn", W: 1.25},
+				{Code: "Win", Label: "⌃", W: 1.25},
+				{Code: "Alt", Label: "⌥", W: 1.25},
+				{Code: "Space", Label: "", W: 6.25},
+				{Code: "RightCtrl", Label: "Fn", W: 1.25},
+				{Code: "RightWin", Label: "⌃", W: 1.25},
+				{Code: "RightMenu", Label: "⌥", W: 1.25},
+				{Code: "RightAlt", Label: "⌥", W: 1.25},
+				{Code: "None", Label: "", W: 0.2},
+				{Code: "←", Label: "◀", W: 1},
+				{Code: "↓", Label: "▼", W: 1},
+				{Code: "→", Label: "▶", W: 1},
+				{Code: "None", Label: "", W: 0.2},
+				{Code: "NumPad0", Label: "0", W: 2},
+				{Code: "NumPad .", Label: ".", W: 1},
+				{Code: "NumPad Enter", Label: "⏎", W: 1},
+			},
+		}
+	default:
+		return Layout{}
+	}
 }
