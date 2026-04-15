@@ -1,7 +1,8 @@
 <script setup>
 import { Events } from "@wailsio/runtime";
-import { ref, onMounted, onBeforeUnmount, nextTick, computed } from 'vue'
+import { ref, onMounted, onBeforeUnmount, nextTick, computed, watch, watchEffect } from 'vue'
 import { GetHeatmap, GetKeyLayout } from "../../bindings/github.com/zxc7563598/key-heat/greetservice";
+import KeyTooltip from "./KeyTooltip.vue";
 
 // 标记基础单位的按键
 const keyHeight = ref(52)
@@ -43,40 +44,13 @@ const keyStyleCache = computed(() => {
 // 切换组件
 const tab = ref("base");
 const indicatorStyle = ref({});
-
 const setTab = async (value, event) => {
   tab.value = value;
   await nextTick();
   updateIndicator(event.target);
   // 获取热力图数据
-  console.log("按钮切换", value)
   if (value == "heat") {
-    GetHeatmap("", "").then(async (result) => {
-      // 找最大值
-      const values = Object.values(result)
-      const max = Math.max(...values, 0)
-      // 防止全 0
-      if (max === 0) return layout.value
-      // 映射 + 写回
-      layout.value = layout.value.map(row =>
-        row.map(key => {
-          const raw = result[key.Code] || 0
-          // log 压缩
-          const logVal = Math.log(raw + 1) / Math.log(max + 1)
-          // 再轻微调整分布
-          const normalized = Math.pow(logVal, 1)
-          // 视觉映射
-          const t = Math.pow(normalized, 1.4)
-          return {
-            ...key,
-            Hot: t,
-            Count: raw
-          }
-        })
-      )
-    }).catch((err) => {
-      console.log("热力图获取失败", err)
-    })
+    applyRange()
   } else {
     layout.value = layout.value.map(row =>
       row.map(key => ({
@@ -87,7 +61,6 @@ const setTab = async (value, event) => {
     )
   }
 };
-
 const updateIndicator = (el) => {
   const rect = el.getBoundingClientRect();
   const parentRect = el.parentNode.getBoundingClientRect();
@@ -96,6 +69,68 @@ const updateIndicator = (el) => {
     transform: `translateX(${rect.left - parentRect.left}px)`,
   };
 };
+
+// 提交热力图筛选日期
+const startDate = ref("");
+const endDate = ref("");
+const formatDate = (date) => {
+  if (!date) return "";
+  return date;
+};
+const applyRange = () => {
+  const start = formatDate(startDate.value) ?? "";
+  const end = formatDate(endDate.value) ?? "";
+  GetHeatmap(start, end).then(async (result) => {
+    // 找最大值
+    const values = Object.values(result)
+    const max = Math.max(...values, 0)
+    // 映射 + 写回
+    layout.value = layout.value.map(row =>
+      row.map(key => {
+        const raw = result[key.Code] || 0
+        const t = ref(0)
+        if (raw != 0) {
+          const logVal = Math.log(raw + 1) / Math.log(max + 1) // log 压缩
+          const normalized = Math.pow(logVal, 1) // 再轻微调整分布
+          t.value = Math.pow(normalized, 1.4) // 视觉映射
+        }
+        return {
+          ...key,
+          Hot: t.value,
+          Count: raw
+        }
+      })
+    )
+  }).catch((err) => {
+    console.log("热力图获取失败", err)
+  })
+};
+watch([startDate, endDate], ([s, e]) => {
+  applyRange();
+});
+
+// 鼠标移入按键
+const hoverKey = ref(null)
+const mouseX = ref(0)
+const mouseY = ref(0)
+let moveRAF = null
+const updateMouse = (e) => {
+  if (moveRAF) cancelAnimationFrame(moveRAF)
+  moveRAF = requestAnimationFrame(() => {
+    mouseX.value = e.clientX
+    mouseY.value = e.clientY
+  })
+}
+const onKeyEnter = (key, e) => {
+  hoverKey.value = key
+  updateMouse(e)
+}
+const onKeyMove = (e) => {
+  updateMouse(e)
+}
+const onKeyLeave = () => {
+  hoverKey.value = null
+}
 
 let observer
 const layout = ref([])
@@ -156,7 +191,8 @@ onBeforeUnmount(() => {
       <div v-for="key in row" :key="key.Code" class="key-content" :style="getKeyContentStyle(key)"
         :ref="el => setStandardKeyRef(el, key)">
         <div class="key" :class="{ active: activeKeys.has(key.Code), hot: key.Hot > 0.6 }"
-          :style="key.Code === 'None' ? null : [keyStyleCache, { '--t': key.Hot }]">
+          :style="key.Code === 'None' ? null : [keyStyleCache, { '--t': key.Hot }]"
+          @mouseenter="onKeyEnter(key, $event)" @mousemove="onKeyMove" @mouseleave="onKeyLeave">
           {{ key.Label }}
         </div>
       </div>
@@ -172,7 +208,16 @@ onBeforeUnmount(() => {
         热力图
       </div>
     </div>
+    <div class="date-range" v-if="tab === 'heat'">
+      <input type="date" v-model="startDate" class="date-input" />
+      <span class="separator">—</span>
+      <input type="date" v-model="endDate" class="date-input" />
+      <div class="apply-btn" @click="startDate = endDate = ''">
+        清空
+      </div>
+    </div>
   </div>
+  <KeyTooltip :data="hoverKey" :x="mouseX" :y="mouseY" :start="formatDate(startDate)" :end="formatDate(endDate)" />
 </template>
 
 <style scoped>
@@ -207,69 +252,54 @@ onBeforeUnmount(() => {
   border-radius: 10px;
   justify-content: center;
   font-weight: 500;
-  background: hsl(0,
-      calc(8% + var(--t) * 72%),
-      calc(97% - var(--t) * 47%));
+  background: hsl(0, calc(8% + var(--t) * 72%), calc(97% - var(--t) * 47%));
   color: #333;
-  box-shadow:
-    3px 3px 6px rgba(0, 0, 0, calc(0.08 + var(--t) * 0.12)),
-    -3px -3px 6px rgba(255, 255, 255, calc(0.9 - var(--t) * 0.7));
-  transition:
-    transform 0.08s ease,
-    box-shadow 0.12s ease,
-    background 0.2s ease,
-    color 0.2s ease;
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, calc(0.08 + var(--t) * 0.12)), -3px -3px 6px rgba(255, 255, 255, calc(0.9 - var(--t) * 0.7));
+  transition: transform 0.08s ease, box-shadow 0.12s ease, background 0.2s ease, color 0.2s ease;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .key:active,
 .key.active {
   transform: translateY(2px) scale(0.96) !important;
-  box-shadow:
-    inset 2px 2px 5px rgba(0, 0, 0, calc(0.15 + var(--t) * 0.2)),
-    inset -2px -2px 5px rgba(255, 255, 255, calc(0.8 - var(--t) * 0.6)) !important;
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, calc(0.15 + var(--t) * 0.2)), inset -2px -2px 5px rgba(255, 255, 255, calc(0.8 - var(--t) * 0.6)) !important;
 }
 
 .key.hot {
   color: #fff;
 }
 
-/* 居中 */
 .functional {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 10px;
+  width: 85%;
 }
 
-/* 胶囊容器 */
 .group {
   position: relative;
   display: flex;
   background: #ffffff;
   border-radius: 999px;
   padding: 4px;
-  box-shadow:
-    0 6px 16px rgba(0, 0, 0, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  left: -15px;
 }
 
-/* 滑块（核心） */
 .indicator {
   position: absolute;
   top: 4px;
-  left: 4px;
+  left: 0px;
   height: calc(100% - 8px);
   border-radius: 999px;
-  background: #f0f1f3;
-  box-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.08),
-    inset 0 1px 2px rgba(255, 255, 255, 0.9);
-
+  background: linear-gradient(to bottom, #f7f8fa, #eef0f3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.06), inset 0 1px 2px rgba(255, 255, 255, 0.9);
+  transform: translateY(-0.5px);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 0;
 }
 
-/* 按钮 */
 .button {
   position: relative;
   z-index: 1;
@@ -283,18 +313,72 @@ onBeforeUnmount(() => {
   white-space: nowrap;
 }
 
-/* hover */
 .button:hover {
   color: #222;
+  transform: translateY(-0.5px);
 }
 
-/* 激活文字 */
 .button.active {
   color: #111;
 }
 
-/* 点击反馈 */
 .button:active {
+  transform: scale(0.96);
+}
+
+.date-range {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  position: relative;
+  right: -15px;
+}
+
+.date-input {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: none;
+  background: #f7f8fa;
+  color: #333;
+  font-size: 13px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 1px rgba(255, 255, 255, 0.8);
+  transition: all 0.2s ease;
+}
+
+.date-input:hover {
+  background: #f0f1f3;
+}
+
+.date-input:focus {
+  outline: none;
+  background: #eef0f3;
+}
+
+.separator {
+  color: #999;
+  font-size: 12px;
+}
+
+.apply-btn {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 13px;
+  color: #444;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: all 0.2s ease;
+}
+
+.apply-btn:hover {
+  color: #111;
+  transform: translateY(-0.5px);
+}
+
+.apply-btn:active {
   transform: scale(0.96);
 }
 </style>
