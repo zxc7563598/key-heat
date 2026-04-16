@@ -31,6 +31,34 @@ export function GetKeyLayout(layoutType) {
     }));
 }
 
+/**
+ * @returns {$CancellablePromise<boolean>}
+ */
+export function GetMonitorStatus() {
+    return $Call.ByID(2837126656);
+}
+
+/**
+ * @returns {$CancellablePromise<boolean>}
+ */
+export function GetPermission() {
+    return $Call.ByID(3347232927);
+}
+
+/**
+ * @returns {$CancellablePromise<void>}
+ */
+export function SetMonitorClose() {
+    return $Call.ByID(2460962230);
+}
+
+/**
+ * @returns {$CancellablePromise<void>}
+ */
+export function SetMonitorStart() {
+    return $Call.ByID(3571678162);
+}
+
 // Private type creation functions
 const $$createType0 = $Create.Map($Create.Any, $Create.Any);
 var $$createType1 = /** @type {(...args: any[]) => any} */(function $$initCreateType1(...args) {

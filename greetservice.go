@@ -5,10 +5,12 @@ import (
 
 	"github.com/zxc7563598/key-heat/internal/storage"
 	"github.com/zxc7563598/key-heat/pkg/keymap"
+	"github.com/zxc7563598/key-heat/pkg/permissions"
 )
 
 type GreetService struct {
 	repo storage.Repository
+	t    *TrayApp
 }
 
 func (g *GreetService) GetKeyLayout(layoutType keymap.LayoutType) keymap.Layout {
@@ -28,4 +30,24 @@ func (g *GreetService) GetHeatmap(start, end string) map[string]int {
 		return map[string]int{}
 	}
 	return data
+}
+
+func (g *GreetService) GetPermission() bool {
+	return permissions.HasAccessibilityPermission()
+}
+
+func (g *GreetService) GetMonitorStatus() bool {
+	return g.t.isActive
+}
+
+func (g *GreetService) SetMonitorStart() {
+	if !g.t.isActive {
+		g.t.startListening()
+	}
+}
+
+func (g *GreetService) SetMonitorClose() {
+	if g.t.isActive {
+		g.t.stopListening()
+	}
 }

@@ -5,12 +5,14 @@ import (
 	_ "embed"
 	"fmt"
 	"log"
+	"os/exec"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"github.com/wailsapp/wails/v3/pkg/events"
 	"github.com/wailsapp/wails/v3/pkg/services/dock"
 	"github.com/zxc7563598/key-heat/internal/monitor"
 	"github.com/zxc7563598/key-heat/internal/storage"
+	"github.com/zxc7563598/key-heat/pkg/permissions"
 )
 
 //go:embed all:frontend/dist
@@ -49,14 +51,15 @@ func main() {
 	// 注入 repository
 	repo := storage.NewRepository(db.DB)
 	// 构建APP
+	greet := &GreetService{
+		repo: repo,
+	}
 	dockService := dock.New()
 	app := application.New(application.Options{
 		Name:        "Key Heat",
 		Description: "A demo of using raw HTML & CSS",
 		Services: []application.Service{
-			application.NewService(&GreetService{
-				repo: repo,
-			}),
+			application.NewService(greet),
 			application.NewService(dockService),
 		},
 		Assets: application.AssetOptions{
@@ -75,6 +78,7 @@ func main() {
 		dockService: dockService,
 		repo:        repo,
 	}
+	greet.t = trayApp
 	trayApp.setup()
 	err = app.Run()
 	if err != nil {
@@ -83,9 +87,13 @@ func main() {
 }
 
 func (t *TrayApp) setup() {
-	t.isActive = true
-	t.mon = monitor.NewMonitor(t.repo, nil, t.app)
-	go t.mon.Start()
+	t.isActive = false
+	if permissions.HasAccessibilityPermission() {
+		t.isActive = true
+		t.mon = monitor.NewMonitor(t.repo, nil, t.app)
+		go t.mon.Start()
+	}
+	t.app.Event.Emit("active:switch", t.isActive)
 	// 创建托盘
 	t.systray = t.app.SystemTray.New()
 	t.systray.SetIcon(iconTemplate)
@@ -105,18 +113,13 @@ func (t *TrayApp) createMenu() {
 		t.menu.Add("● 正在监听").SetEnabled(false)
 		// Toggle active
 		t.menu.Add("停止监听").OnClick(func(ctx *application.Context) {
-			t.mon.Stop()
-			t.isActive = false
-			t.createMenu()
+			t.stopListening()
 		})
 	} else {
 		t.menu.Add("○ 已停止").SetEnabled(false)
 		// Toggle active
 		t.menu.Add("启动监听").OnClick(func(ctx *application.Context) {
-			t.mon = monitor.NewMonitor(t.repo, nil, t.app)
-			go t.mon.Start()
-			t.isActive = true
-			t.createMenu()
+			t.startListening()
 		})
 	}
 	t.menu.AddSeparator()
@@ -141,7 +144,7 @@ func (t *TrayApp) openWindow() {
 	t.window = t.app.Window.NewWithOptions(application.WebviewWindowOptions{
 		Title:  "Key Heat",
 		Width:  1200,
-		Height: 500,
+		Height: 600,
 		Mac: application.MacWindow{
 			InvisibleTitleBarHeight: 50,
 			Backdrop:                application.MacBackdropTranslucent,
@@ -154,4 +157,39 @@ func (t *TrayApp) openWindow() {
 		t.dockService.HideAppIcon()
 		t.window = nil
 	})
+}
+
+func (t *TrayApp) startListening() {
+	log.Println("startListening开始调用")
+	if permissions.HasAccessibilityPermission() {
+		t.mon = monitor.NewMonitor(t.repo, nil, t.app)
+		go t.mon.Start()
+		t.isActive = true
+		t.app.Event.Emit("active:switch", t.isActive)
+	} else {
+		t.showPermissionDialog()
+	}
+	t.createMenu()
+}
+func (t *TrayApp) stopListening() {
+	log.Println("stopListening开始调用")
+	t.mon.Stop()
+	t.isActive = false
+	t.app.Event.Emit("active:switch", t.isActive)
+	t.createMenu()
+}
+
+func (t *TrayApp) showPermissionDialog() {
+	dialog := t.app.Dialog.Question().
+		SetTitle("需要权限").
+		SetMessage("需要开启辅助功能权限才能监听键盘，是否前往设置？")
+	goSetting := dialog.AddButton("前往设置")
+	goSetting.OnClick(func() {
+		exec.Command("open", "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility").Run()
+	})
+	goCancel := dialog.AddButton("取消")
+	goCancel.OnClick(func() {
+		t.app.Quit()
+	})
+	dialog.Show()
 }
