@@ -16,8 +16,11 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
-//go:embed assets/icon.png
-var icon []byte
+//go:embed assets/iconTemplate.png
+var iconTemplate []byte
+
+//go:embed assets/iconTemplateWhite.png
+var iconTemplateWhite []byte
 
 type TrayApp struct {
 	dockService *dock.DockService
@@ -85,7 +88,9 @@ func (t *TrayApp) setup() {
 	go t.mon.Start()
 	// 创建托盘
 	t.systray = t.app.SystemTray.New()
-	t.systray.SetIcon(icon)
+	t.systray.SetIcon(iconTemplate)
+	t.systray.SetDarkModeIcon(iconTemplateWhite)
+	t.systray.SetTemplateIcon(iconTemplate)
 	// 创建菜单
 	t.createMenu()
 	// 打开窗口
@@ -94,21 +99,20 @@ func (t *TrayApp) setup() {
 
 func (t *TrayApp) createMenu() {
 	t.menu = t.app.NewMenu()
+	t.menu.Add("KeyHeat").SetEnabled(false)
 	// 切换监听状态
 	if t.isActive {
-		statusItem := t.menu.Add("当前状态: 已监听")
-		statusItem.SetEnabled(false)
+		t.menu.Add("● 正在监听").SetEnabled(false)
 		// Toggle active
-		t.menu.Add("🔴 停止监听").OnClick(func(ctx *application.Context) {
+		t.menu.Add("停止监听").OnClick(func(ctx *application.Context) {
 			t.mon.Stop()
 			t.isActive = false
 			t.createMenu()
 		})
 	} else {
-		statusItem := t.menu.Add("当前状态: 未监听")
-		statusItem.SetEnabled(false)
+		t.menu.Add("○ 已停止").SetEnabled(false)
 		// Toggle active
-		t.menu.Add("🟢 启动监听").OnClick(func(ctx *application.Context) {
+		t.menu.Add("启动监听").OnClick(func(ctx *application.Context) {
 			t.mon = monitor.NewMonitor(t.repo, nil, t.app)
 			go t.mon.Start()
 			t.isActive = true
@@ -116,8 +120,8 @@ func (t *TrayApp) createMenu() {
 		})
 	}
 	t.menu.AddSeparator()
-	// 显示主界面
-	t.menu.Add("显示主界面").OnClick(func(ctx *application.Context) {
+	// 打开主界面
+	t.menu.Add("打开主界面").OnClick(func(ctx *application.Context) {
 		if t.window == nil {
 			t.openWindow()
 		}
