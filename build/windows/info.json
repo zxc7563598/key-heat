@@ -1,15 +1,15 @@
 {
-	"fixed": {
-		"file_version": "0.1.0"
-	},
-	"info": {
-		"0000": {
-			"ProductVersion": "0.1.0",
-			"CompanyName": "My Company",
-			"FileDescription": "A key-heat application",
-			"LegalCopyright": "© 2026, My Company",
-			"ProductName": "My Product",
-			"Comments": "This is a comment"
-		}
-	}
+  "fixed": {
+    "file_version": "1.0.0"
+  },
+  "info": {
+    "0000": {
+      "ProductVersion": "1.0.0",
+      "CompanyName": "何俊杰",
+      "FileDescription": "键盘按键热力图监控工具 - 实时记录并可视化您的键盘使用习惯",
+      "LegalCopyright": "© 2026, 何俊杰",
+      "ProductName": "Key Heat",
+      "Comments": "基于 Wails 开发的跨平台键盘监控应用，提供按键统计和热力图可视化功能"
+    }
+  }
 }
