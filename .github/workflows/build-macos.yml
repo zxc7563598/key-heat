@@ -1,0 +1,62 @@
+name: Build macOS App
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+
+    steps:
+      # 拉代码
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 安装 Go
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+
+      # 安装 Node
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # 安装 Wails3 CLI
+      - name: Install Wails3
+        run: |
+          go install github.com/wailsapp/wails/v3/cmd/wails3@latest
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+
+      # 安装前端依赖
+      - name: Install frontend deps (clean)
+        run: |
+          cd frontend
+          rm -rf node_modules package-lock.json
+          npm install
+          cd ..
+
+      # 构建 macOS App
+      - name: Build macOS
+        run: |
+          wails3 package
+
+      # 打包 .app 为 zip
+      - name: Zip app
+        run: |
+          cd bin
+          zip -r key-heat-macos.zip key-heat.app
+
+      # 上传产物
+      - name: Upload macOS app
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-app
+          path: bin/key-heat-macos.zip
