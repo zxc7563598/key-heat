@@ -1,9 +1,7 @@
 # Key Heat
 
 <p align="center">
-    <picture>
-        <img src="https://raw.githubusercontent.com/zxc7563598/key-heat/main/build/appicon.png" width="100">
-    </picture>
+    <img src="https://raw.githubusercontent.com/zxc7563598/key-heat/main/build/appicon.png" width="100">
 </p>
 
 <div align="center">
@@ -14,6 +12,11 @@
 <div align="center">
   Transform your keyboard into an observable heatmap
 </div>
+
+<p align="center">
+    <img src="https://raw.githubusercontent.com/zxc7563598/key-heat/main/assets/Screenshot01.png" width="40%">
+    <img src="https://raw.githubusercontent.com/zxc7563598/key-heat/main/assets/Screenshot02.png" width="40%">
+</p>
 
 ---
 
