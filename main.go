@@ -57,7 +57,7 @@ func main() {
 	dockService := dock.New()
 	app := application.New(application.Options{
 		Name:        "Key Heat",
-		Description: "A demo of using raw HTML & CSS",
+		Description: "键盘按键热力图监控工具 - 实时记录并可视化您的键盘使用习惯",
 		Services: []application.Service{
 			application.NewService(greet),
 			application.NewService(dockService),
