@@ -1,37 +1,41 @@
-name: Build Windows EXE (Wails3)
+name: Build Windows EXE
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build-windows:
     runs-on: windows-latest
 
     steps:
-      # 1. 拉代码
+      # 拉代码
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 2. 安装 Go
+      # 2安装 Go
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version: "1.25"
 
-      # 3. 安装 Node
+      # 安装 Node
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
-      # 4. 安装 Wails3 CLI
+      # 安装 Wails3 CLI
       - name: Install Wails3
         run: |
           go install github.com/wailsapp/wails/v3/cmd/wails3@latest
           echo "$env:USERPROFILE\go\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
+      # 安装 NSIS
       - name: Install NSIS
         run: |
           choco install nsis -y
@@ -40,6 +44,7 @@ jobs:
         run: |
           echo "C:\Program Files (x86)\NSIS" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
+      # 安装前端依赖
       - name: Install frontend deps (clean)
         run: |
           cd frontend
@@ -48,23 +53,16 @@ jobs:
           npm install
           cd ..
 
-      # 6. 构建 Windows EXE
+      # 构建 Windows 安装包
       - name: Build Windows
         env:
           CGO_ENABLED: 1
         run: |
           wails3 package
 
-      # 7. 查看产物（调试用，可删）
-      - name: List build output
-        run: |
-          Get-ChildItem -Recurse build
-
-      # 8. 上传 EXE
-      - name: Upload artifact
+      # 上传 installer
+      - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
-          name: windows-build
-          path: |
-            bin/*.exe
-            build/windows/nsis/*.exe
+          name: windows-installer
+          path: bin/*installer.exe
