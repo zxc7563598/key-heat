@@ -1,18 +1,18 @@
 <script setup>
 import { Events } from "@wailsio/runtime";
 import { ref, onMounted, onBeforeUnmount, nextTick, computed, watch, watchEffect } from 'vue'
-import { GetHeatmap, GetKeyLayout, GetPermission, SetMonitorClose, SetMonitorStart, GetMonitorStatus } from "../../bindings/github.com/zxc7563598/key-heat/greetservice";
+import { GetHeatmap, GetKeyLayout, GetPermission, SetMonitorClose, SetMonitorStart, GetMonitorStatus, GetBootStartup, OpenBootStartup, CloseBootStartup } from "../../bindings/github.com/zxc7563598/key-heat/greetservice";
 import KeyTooltip from "./KeyTooltip.vue";
 
 // 当前监听状态
 const monitor = ref(false)
 const permission = ref(false)
+const bootStartup = ref(false)
 
 // 启动监听
 const setMonitorStart = () => {
   console.log("启动监听", "启动")
   SetMonitorStart().then(() => {
-    // 确认监听状态
     GetMonitorStatus().then(async (result) => {
       monitor.value = result
     }).catch((err) => {
@@ -27,9 +27,34 @@ const setMonitorStart = () => {
 const setMonitorClose = () => {
   console.log("关闭监听", "启动")
   SetMonitorClose().then(() => {
-    // 确认监听状态
     GetMonitorStatus().then(async (result) => {
       monitor.value = result
+    }).catch((err) => {
+      console.log(err)
+    })
+  }).catch((err) => {
+    console.log(err)
+  })
+}
+
+// 开启自启动
+const openBootStartup = () => {
+  OpenBootStartup().then(() => {
+    GetBootStartup().then(async (result) => {
+      bootStartup.value = result
+    }).catch((err) => {
+      console.log(err)
+    })
+  }).catch((err) => {
+    console.log(err)
+  })
+}
+
+// 关闭自启动
+const closeBootStartup = () => {
+  CloseBootStartup().then(() => {
+    GetBootStartup().then(async (result) => {
+      bootStartup.value = result
     }).catch((err) => {
       console.log(err)
     })
@@ -248,6 +273,12 @@ const checkPermission = () => {
   }).catch((err) => {
     console.log(err)
   })
+  // 确认开机自启动
+  GetBootStartup().then(async (result) => {
+    bootStartup.value = result
+  }).catch((err) => {
+    console.log(err)
+  })
 }
 
 let timer = null
@@ -273,8 +304,23 @@ const startPermissionWatch = () => {
       <div class="action-btn danger" v-if="monitor" @click="setMonitorClose">
         停止监听
       </div>
+      <div class="action-btn primary" v-if="!bootStartup" @click="openBootStartup">
+        开机自启动
+      </div>
+      <div class="action-btn danger" v-if="bootStartup" @click="closeBootStartup">
+        关闭开机自启动
+      </div>
     </div>
     <div class="status-right">
+      <div class="status-item">
+        <div class="dot-wrapper">
+          <span class="dot" :class="{ ok: bootStartup, bad: !bootStartup }"></span>
+          <div class="tooltip-status">
+            {{ permission ? "已开启开机自启动" : "未开启开机自启动" }}
+          </div>
+        </div>
+        <span class="label">自启动</span>
+      </div>
       <div class="status-item">
         <div class="dot-wrapper">
           <span class="dot" :class="{ ok: permission, bad: !permission }"></span>
@@ -287,7 +333,6 @@ const startPermissionWatch = () => {
       <div class="status-item">
         <div class="dot-wrapper">
           <span class="dot monitor" :class="{ ok: monitor, bad: !monitor }"></span>
-
           <div class="tooltip-status">
             {{ monitor ? "正在监听键盘输入" : "监听已停止" }}
           </div>

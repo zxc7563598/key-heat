@@ -11,6 +11,20 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 import * as keymap$0 from "./pkg/keymap/models.js";
 
 /**
+ * @returns {$CancellablePromise<boolean>}
+ */
+export function CloseBootStartup() {
+    return $Call.ByID(2658529561);
+}
+
+/**
+ * @returns {$CancellablePromise<boolean>}
+ */
+export function GetBootStartup() {
+    return $Call.ByID(2052397073);
+}
+
+/**
  * @param {string} start
  * @param {string} end
  * @returns {$CancellablePromise<{ [_ in string]?: number }>}
@@ -43,6 +57,13 @@ export function GetMonitorStatus() {
  */
 export function GetPermission() {
     return $Call.ByID(3347232927);
+}
+
+/**
+ * @returns {$CancellablePromise<boolean>}
+ */
+export function OpenBootStartup() {
+    return $Call.ByID(1790699069);
 }
 
 /**

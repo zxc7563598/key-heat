@@ -5,7 +5,11 @@ import (
 	_ "embed"
 	"fmt"
 	"log"
+	"os"
 	"os/exec"
+	"path/filepath"
+	"strconv"
+	"syscall"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"github.com/wailsapp/wails/v3/pkg/events"
@@ -36,6 +40,10 @@ type TrayApp struct {
 }
 
 func main() {
+	if alreadyRunning() {
+		os.Exit(0)
+	}
+	defer cleanupLock()
 	// 初始化数据库
 	db, err := storage.NewDB(nil)
 	if err != nil {
@@ -86,6 +94,7 @@ func main() {
 	}
 }
 
+// 系统构建核心逻辑
 func (t *TrayApp) setup() {
 	t.isActive = false
 	if permissions.HasAccessibilityPermission() {
@@ -105,6 +114,7 @@ func (t *TrayApp) setup() {
 	t.openWindow()
 }
 
+// 创建菜单
 func (t *TrayApp) createMenu() {
 	t.menu = t.app.NewMenu()
 	t.menu.Add("KeyHeat").SetEnabled(false)
@@ -140,6 +150,7 @@ func (t *TrayApp) createMenu() {
 	t.systray.SetMenu(t.menu)
 }
 
+// 打开窗口
 func (t *TrayApp) openWindow() {
 	t.window = t.app.Window.NewWithOptions(application.WebviewWindowOptions{
 		Title:  "Key Heat",
@@ -159,6 +170,7 @@ func (t *TrayApp) openWindow() {
 	})
 }
 
+// 菜单操作开启监听事件
 func (t *TrayApp) startListening() {
 	log.Println("startListening开始调用")
 	if permissions.HasAccessibilityPermission() {
@@ -171,6 +183,8 @@ func (t *TrayApp) startListening() {
 	}
 	t.createMenu()
 }
+
+// 菜单操作关闭监听事件
 func (t *TrayApp) stopListening() {
 	log.Println("stopListening开始调用")
 	t.mon.Stop()
@@ -179,6 +193,7 @@ func (t *TrayApp) stopListening() {
 	t.createMenu()
 }
 
+// 设置权限弹窗
 func (t *TrayApp) showPermissionDialog() {
 	dialog := t.app.Dialog.Question().
 		SetTitle("需要权限").
@@ -192,4 +207,49 @@ func (t *TrayApp) showPermissionDialog() {
 		t.app.Quit()
 	})
 	dialog.Show()
+}
+
+// 单实例限制
+func alreadyRunning() bool {
+	lockFile := filepath.Join(os.TempDir(), "keyheat.lock")
+	data, err := os.ReadFile(lockFile)
+	if err == nil && len(data) > 0 {
+		oldPID, err := strconv.Atoi(string(data))
+		if err == nil {
+			// 判断进程是否还活着
+			if processExists(oldPID) {
+				return true
+			}
+		}
+		// 删除旧锁
+		_ = os.Remove(lockFile)
+	}
+	// 写入当前 PID
+	pid := os.Getpid()
+	_ = os.WriteFile(lockFile, []byte(fmt.Sprintf("%d", pid)), 0644)
+	return false
+}
+
+// 检查进程是否存在
+func processExists(pid int) bool {
+	p, err := os.FindProcess(pid)
+	if err != nil {
+		return false
+	}
+	err = p.Signal(os.Signal(syscall.Signal(0)))
+	return err == nil
+}
+
+// 释放单实例限制
+func cleanupLock() {
+	lockFilePath := filepath.Join(os.TempDir(), "keyheat.lock")
+	data, err := os.ReadFile(lockFilePath)
+	if err != nil {
+		return
+	}
+	currentPID := os.Getpid()
+	expected := fmt.Sprintf("%d", currentPID)
+	if string(data) == expected {
+		_ = os.Remove(lockFilePath)
+	}
 }

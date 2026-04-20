@@ -6,6 +6,7 @@ require (
 	github.com/Tryanks/gorm-sqlite v1.2.14
 	github.com/robotn/gohook v0.42.3
 	github.com/wailsapp/wails/v3 v3.0.0-alpha.74
+	golang.org/x/sys v0.42.0
 	gorm.io/gorm v1.31.1
 )
 
@@ -54,7 +55,6 @@ require (
 	golang.org/x/exp v0.0.0-20260312153236-7ab1446f8b90 // indirect
 	golang.org/x/image v0.35.0 // indirect
 	golang.org/x/net v0.52.0 // indirect
-	golang.org/x/sys v0.42.0 // indirect
 	golang.org/x/text v0.35.0 // indirect
 	golang.org/x/tools v0.43.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
