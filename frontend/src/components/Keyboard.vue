@@ -1,8 +1,9 @@
 <script setup>
 import { Events } from "@wailsio/runtime";
 import { ref, onMounted, onBeforeUnmount, nextTick, computed, watch, watchEffect } from 'vue'
-import { GetHeatmap, GetKeyLayout, GetPermission, SetMonitorClose, SetMonitorStart, GetMonitorStatus, GetBootStartup, OpenBootStartup, CloseBootStartup } from "../../bindings/github.com/zxc7563598/key-heat/greetservice";
+import { GetHeatmap, GetKeyLayout, GetPermission, SetMonitorClose, SetMonitorStart, GetMonitorStatus, GetBootStartup, OpenBootStartup, CloseBootStartup, GetPrompt } from "../../bindings/github.com/zxc7563598/key-heat/greetservice";
 import KeyTooltip from "./KeyTooltip.vue";
+import PromptDialog from "./PromptDialog.vue"
 
 // 当前监听状态
 const monitor = ref(false)
@@ -195,6 +196,21 @@ const onKeyLeave = () => {
   hoverKey.value = null
 }
 
+// 导出数据
+const showDialog = ref(false)
+const promptText = ref("")
+
+const getPrompt = () => {
+  const start = formatDate(startDate.value) ?? ""
+  const end = formatDate(endDate.value) ?? ""
+  GetPrompt(start, end).then((result) => {
+    promptText.value = result
+    showDialog.value = true
+  }).catch((err) => {
+    console.log("提示词获取失败", err)
+  })
+}
+
 let observer
 const layout = ref([])
 onMounted(async () => {
@@ -370,9 +386,13 @@ const startPermissionWatch = () => {
       <div class="apply-btn" @click="startDate = endDate = ''">
         清空
       </div>
+      <div class="apply-btn" @click="getPrompt">
+        生成报告
+      </div>
     </div>
   </div>
   <KeyTooltip :data="hoverKey" :x="mouseX" :y="mouseY" :start="formatDate(startDate)" :end="formatDate(endDate)" />
+  <PromptDialog v-model="showDialog" :prompt="promptText" />
 </template>
 
 <style scoped>

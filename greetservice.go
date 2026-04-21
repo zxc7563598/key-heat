@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/zxc7563598/key-heat/internal/autostart"
+	"github.com/zxc7563598/key-heat/internal/prompt"
 	"github.com/zxc7563598/key-heat/internal/storage"
 	"github.com/zxc7563598/key-heat/pkg/keymap"
 	"github.com/zxc7563598/key-heat/pkg/permissions"
@@ -82,4 +84,28 @@ func (g *GreetService) CloseBootStartup() bool {
 		return false
 	}
 	return true
+}
+
+func (g *GreetService) GetPrompt(start, end string) string {
+	startText := start
+	endText := end
+	if start == "" {
+		start = "2000-01-01"
+		startText = "最初"
+	}
+	if end == "" {
+		end = "2100-01-01"
+		endText = "此刻"
+	}
+	data, err := g.repo.GetStatsByDateRange(start, end)
+	if err != nil {
+		log.Printf("获取热力图数据失败: %v", err)
+		return ""
+	}
+	prompt, err := prompt.BuildKeyboardReportPrompt(data, fmt.Sprintf("%s - %s", startText, endText))
+	if err != nil {
+		log.Printf("提示词数据获取失败: %v", err)
+		return ""
+	}
+	return prompt
 }

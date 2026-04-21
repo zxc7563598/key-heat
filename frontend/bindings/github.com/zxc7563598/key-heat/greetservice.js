@@ -11,6 +11,7 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 import * as keymap$0 from "./pkg/keymap/models.js";
 
 /**
+ * 关闭开机自启动
  * @returns {$CancellablePromise<boolean>}
  */
 export function CloseBootStartup() {
@@ -18,6 +19,7 @@ export function CloseBootStartup() {
 }
 
 /**
+ * 获取开机自启动状态
  * @returns {$CancellablePromise<boolean>}
  */
 export function GetBootStartup() {
@@ -25,6 +27,7 @@ export function GetBootStartup() {
 }
 
 /**
+ * 根据日期查询热力数据
  * @param {string} start
  * @param {string} end
  * @returns {$CancellablePromise<{ [_ in string]?: number }>}
@@ -36,6 +39,7 @@ export function GetHeatmap(start, end) {
 }
 
 /**
+ * 获取键盘布局
  * @param {keymap$0.LayoutType} layoutType
  * @returns {$CancellablePromise<keymap$0.Layout>}
  */
@@ -46,6 +50,7 @@ export function GetKeyLayout(layoutType) {
 }
 
 /**
+ * 获取当前是否监听
  * @returns {$CancellablePromise<boolean>}
  */
 export function GetMonitorStatus() {
@@ -53,6 +58,7 @@ export function GetMonitorStatus() {
 }
 
 /**
+ * 获取当前是否拥有监听权限
  * @returns {$CancellablePromise<boolean>}
  */
 export function GetPermission() {
@@ -60,6 +66,16 @@ export function GetPermission() {
 }
 
 /**
+ * @param {string} start
+ * @param {string} end
+ * @returns {$CancellablePromise<string>}
+ */
+export function GetPrompt(start, end) {
+    return $Call.ByID(1568667902, start, end);
+}
+
+/**
+ * 设置开机自启动
  * @returns {$CancellablePromise<boolean>}
  */
 export function OpenBootStartup() {
@@ -67,6 +83,7 @@ export function OpenBootStartup() {
 }
 
 /**
+ * 停止监听
  * @returns {$CancellablePromise<void>}
  */
 export function SetMonitorClose() {
@@ -74,6 +91,7 @@ export function SetMonitorClose() {
 }
 
 /**
+ * 启动监听
  * @returns {$CancellablePromise<void>}
  */
 export function SetMonitorStart() {
