@@ -20,10 +20,10 @@ Unicode true
 ## The following information is taken from the wails_tools.nsh file, but they can be overwritten here.
 ####
 !define INFO_PROJECTNAME    "key-heat"
-!define INFO_COMPANYNAME    "何俊杰"
+!define INFO_COMPANYNAME    "hejunjie"
 !define INFO_PRODUCTNAME    "key-heat"
-!define INFO_PRODUCTVERSION "1.0.0"
-!define INFO_COPYRIGHT      "© 2026 suqingan"
+!define INFO_PRODUCTVERSION "1.1.0"
+!define INFO_COPYRIGHT      "© 2026 hejunjie"
 
 # Define executable and data directory names
 !define PRODUCT_EXECUTABLE  "${INFO_PROJECTNAME}.exe"
