@@ -19,15 +19,18 @@ Unicode true
 ####
 ## The following information is taken from the wails_tools.nsh file, but they can be overwritten here.
 ####
-## !define INFO_PROJECTNAME    "my-project" # Default "key-heat"
-## !define INFO_COMPANYNAME    "My Company" # Default "My Company"
-## !define INFO_PRODUCTNAME    "My Product Name" # Default "My Product"
-## !define INFO_PRODUCTVERSION "1.0.0"     # Default "0.1.0"
-## !define INFO_COPYRIGHT      "(c) Now, My Company" # Default "© 2026, My Company"
+!define INFO_PROJECTNAME    "key-heat"
+!define INFO_COMPANYNAME    "何俊杰"
+!define INFO_PRODUCTNAME    "key-heat"
+!define INFO_PRODUCTVERSION "1.0.0"
+!define INFO_COPYRIGHT      "© 2026 suqingan"
+
+# Define executable and data directory names
+!define PRODUCT_EXECUTABLE  "${INFO_PROJECTNAME}.exe"
+!define APP_DATA_DIR        "${INFO_PROJECTNAME}"
+!define UNINST_KEY_NAME     "${INFO_COMPANYNAME}${INFO_PRODUCTNAME}"
+
 ###
-## !define PRODUCT_EXECUTABLE  "Application.exe"      # Default "${INFO_PROJECTNAME}.exe"
-## !define UNINST_KEY_NAME     "UninstKeyInRegistry"  # Default "${INFO_COMPANYNAME}${INFO_PRODUCTNAME}"
-####
 ## !define REQUEST_EXECUTION_LEVEL "admin"            # Default "admin"  see also https://nsis.sourceforge.io/Docs/Chapter4.html
 ####
 ## Include the wails tools
@@ -72,16 +75,16 @@ ManifestDPIAware true
 
 Name "${INFO_PRODUCTNAME}"
 OutFile "..\..\..\bin\${INFO_PROJECTNAME}-${ARCH}-installer.exe" # Name of the installer's file.
-InstallDir "$PROGRAMFILES64\${INFO_COMPANYNAME}\${INFO_PRODUCTNAME}" # Default installing folder ($PROGRAMFILES is Program Files folder).
+InstallDir "$PROGRAMFILES64\${INFO_PRODUCTNAME}"
 ShowInstDetails show # This will always show the installation details.
 
 Function .onInit
-   !insertmacro wails.checkArchitecture
+    !insertmacro wails.checkArchitecture
 FunctionEnd
 
 Section
     !insertmacro wails.setShellContext
-
+    
     !insertmacro wails.webview2runtime
 
     SetOutPath $INSTDIR
@@ -97,10 +100,11 @@ Section
     !insertmacro wails.writeUninstaller
 SectionEnd
 
-Section "uninstall" 
+Section "uninstall"
     !insertmacro wails.setShellContext
 
-    RMDir /r "$AppData\${PRODUCT_EXECUTABLE}" # Remove the WebView2 DataPath
+    RMDir /r "$LOCALAPPDATA\${APP_DATA_DIR}"
+    RMDir /r "$APPDATA\${APP_DATA_DIR}"
 
     RMDir /r $INSTDIR
 
