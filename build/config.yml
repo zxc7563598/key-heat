@@ -5,13 +5,13 @@ version: '3'
 
 # This information is used to generate the build assets.
 info:
-  companyName: "My Company" # The name of the company
-  productName: "My Product" # The name of the application
-  productIdentifier: "com.mycompany.myproduct" # The unique product identifier
-  description: "A program that does X" # The application description
-  copyright: "(c) 2025, My Company" # Copyright text
-  comments: "Some Product Comments" # Comments
-  version: "0.0.1" # The application version
+  companyName: "何俊杰" # The name of the company
+  productName: "key-heat" # The name of the application
+  productIdentifier: "com.keyheat.app" # The unique product identifier
+  description: "键盘按键热力图监控工具 - 实时记录并可视化您的键盘使用习惯" # The application description
+  copyright: "(c) 2025, 何俊杰" # Copyright text
+  comments: "" # Comments
+  version: "1.1.0" # The application version
   # cfBundleIconName: "appicon" # The macOS icon name in Assets.car icon bundles (optional)
   #                               # Should match the name of your .icon file without the extension
   #                               # If not set and Assets.car exists, defaults to "appicon"
