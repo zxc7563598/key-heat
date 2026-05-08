@@ -18,6 +18,8 @@
     <img src="https://raw.githubusercontent.com/zxc7563598/key-heat/main/assets/Screenshot02.png" width="40%">
 </p>
 
+**This project has been parsed by Zread. If you need a quick overview of the project, you can click here to view it：[Understand this project](https://zread.ai/zxc7563598/key-heat)**
+
 ---
 
 Key Heat is a cross platform desktop application that can transform your daily keyboard usage into an interactive visual heatmap.

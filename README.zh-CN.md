@@ -18,6 +18,8 @@
     <img src="https://raw.githubusercontent.com/zxc7563598/key-heat/main/assets/Screenshot02.png" width="40%">
 </p>
 
+**本项目已经经由 Zread 解析完成，如果需要快速了解项目，可以点击此处进行查看：[了解本项目](https://zread.ai/zxc7563598/key-heat)**
+
 ---
 
 Key Heat 是一款跨平台桌面应用，能够将你日常的键盘使用情况转化为交互式的可视化热力图。
